@@ -1,8 +1,9 @@
+var BibleReference;
+(function() {
 // 
 // This code was written by Jason Wall.  Feel free to use, and if you can, include a link back to www.walljm.com
 // Jason@walljm.com // www.walljm.com
 //
-
 var booksizes = [
     [],
     [31, 25, 24, 26, 32, 22, 24, 22, 29, 32, 32, 20, 18, 24, 21, 16, 27, 33, 38, 18, 34, 24, 20, 67, 34, 35, 46, 22, 35, 43, 55, 32, 20, 31, 29, 43, 36, 30, 23, 23, 57, 38, 34, 34, 28, 34, 31, 22, 33, 26],
@@ -143,11 +144,11 @@ var bookinfo = [
  { re: /\br(ev(elations?)?|[ev])\b/i, bookname: "Revelation", longbookname: "The_Apocalypse_Of_John", lastchapter: 22 },
 ];
 
-function Reference(bibleRef) {
-	bibleRef = bibleRef.toLowerCase();
-	var bibleNames = new Object;
-	var book = bibleRef.substring(0, bibleRef.search(/\s\d/i));
-	
+BibleReference = function(bibleRef) {
+    bibleRef = bibleRef.toLowerCase();
+    var bibleNames = new Object;
+    var book = bibleRef.substring(0, bibleRef.search(/\s\d/i));
+    
     for (var num in bookinfo) {
         if (num == 0) continue;
         var b = bookinfo[num];
@@ -182,9 +183,9 @@ function Reference(bibleRef) {
     }
 }
 
-Reference.prototype.toString = function () { return this.bookname+" "+this.chapter+":"+this.startverse+"-"+this.endverse }
+BibleReference.prototype.toString = function () { return this.bookname+" "+this.chapter+":"+this.startverse+"-"+this.endverse }
 
-Reference.prototype.iterator = function() { return new VerseIterator(this) };
+BibleReference.prototype.iterator = function() { return new VerseIterator(this) };
 function VerseIterator(reference) {
     // Keep it simple for now
     this.book       = reference.book;
@@ -199,3 +200,4 @@ VerseIterator.prototype.next = function() {
     if (this.verse > this.endverse) { return null };
     return { book: this.book, chapter: this.chapter, verse: this.verse++ };
 };
+})();
