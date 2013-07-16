@@ -8,7 +8,7 @@ Tertius.BibleSources.xml = {
     }).done(function (bible) {
       $.extend(bible, Tertius.BibleSources.xml);
       bible.name = bible.documentElement.getAttribute("name");
-      Tertius.Bibles[name] = bible;
+      Tertius.Bibles[bible.name] = bible;
     });
   },
 
@@ -16,7 +16,7 @@ Tertius.BibleSources.xml = {
     var versit = this.evaluate("//bible/book[@num="+book+"]/chapter[@num="+chapter+"]/verse[@num >= "+v1+" and @num <= "+v2+"]", this, null, 0, null);
     var results = [];
     while (verse = versit.iterateNext()) {
-      results.push({ reference: chapter+":"+verse.getAttribute("num"), text: verse.textContent });
+      results.push({ reference: chapter+":"+verse.getAttribute("num"), text: (new XMLSerializer()).serializeToString(verse)});
     }
     return results;
   },
