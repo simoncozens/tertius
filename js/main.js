@@ -4,12 +4,19 @@ Tertius = {
 	setup: function() {
     Tertius.BibleSources.xml.load("net");
     Tertius.BibleSources.xml.load("shinkyodo");
+    $("#versions").empty();
+    $("#versions").append('<option data-placeholder="true">Select a Bible version</option>');
+    for (var ver in Tertius.Bibles) {
+      $("#versions").append("<option name=\""+ver+"\">"+Tertius.Bibles[ver].name+"</option>");
+    }
+    $("#versions").selectmenu("refresh");
 		$("#searchbar").keypress(function(e) {
       if(e.which == 13) {
         Tertius.search();
       }
     });
 	},
+  currentBibles: 
   search: function() {
     var ref = $("#searchbar").val();
     $("#bible").empty();

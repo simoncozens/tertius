@@ -3,6 +3,7 @@ Tertius.BibleSources.xml = {
     $.ajax({
       url: name+".xml",
       dataType: "xml",
+      async: false,
       error: function (j, text, error) { console.log(error); }
     }).done(function (bible) {
       $.extend(bible, Tertius.BibleSources.xml);
