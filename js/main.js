@@ -2,9 +2,15 @@ Tertius = {
   Bibles: {},
   BibleSources: {},
   setup: function() {
-    $.mobile.loading( "show" );
-    Tertius.BibleSources.xml.load("net");
-    Tertius.BibleSources.xml.load("shinkyodo");
+    Tertius.BibleSources.sql.load("net", Tertius.rebuildBibleMenu);
+    Tertius.BibleSources.xml.load("shinkyodo", Tertius.rebuildBibleMenu);
+    $("#searchbar").keypress(function(e) {
+      if(e.which == 13) {
+        Tertius.search();
+      }
+    });
+  },
+  rebuildBibleMenu: function() {
     $("#versions").empty();
     $("#versions").append('<option data-placeholder="true">Select a Bible version</option>');
     for (var ver in Tertius.Bibles) {
@@ -12,12 +18,6 @@ Tertius = {
     }
     $("#versions").val([  $("#versions").children().first().next().val() ]);
     $("#versions").selectmenu("refresh");
-    $("#searchbar").keypress(function(e) {
-      if(e.which == 13) {
-        Tertius.search();
-      }
-    });
-    $.mobile.loading( "hide" );
   },
   currentBibles: function() {
     return $("#versions").val().map(function (x) {return Tertius.Bibles[x]});
@@ -38,35 +38,32 @@ Tertius = {
     // It's a word search
   },
   showBible: function(ref) {
-    /* For efficient searching we are going to get all the verse information 
-    for each passage from a given source in one go, then fit it together later, 
-      rather than iterating each verse in each source. */
-    var results= {};
-    ref.references.forEach( function(r) {
-      var order = [];
-      var thisref;
+    // Prepare rows to receive results
+    var i = ref.iterator();
+    var v;
+    while ((v = i.next())) {
+      var key = v.bookId + "_" + v.chapter + "_" + v.verse; // XXX Should be OSIS
+      var row = $('<tr id="'+key+'"/>');
+      row.append('<td>'+v.chapter+":"+v.verse+'</td>');
       Tertius.currentBibles().forEach(function (b) {
-        b.lookup(r.bookId, r.chapter, r.startVerse, r.endVerse).forEach(function (verse) {
-          if (!results[verse.reference]) {
-            results[verse.reference] = {};
-            order.push(verse.reference);
-          }
-          results[verse.reference][b.name] = verse.text;
-        });
+        row.append('<td id="'+b.name+"_"+key+'"></td>');
       });
-
-      order.forEach( function(r) {
-        var row = $('<tr><th class="ref">'+r+"</th></tr>");
-        Tertius.currentBibles().forEach(function (b) {
-          v = results[r][b.name];
-          var td = $("<td>"); td.append(v);
-          row.append(td);
-        });
-        $("#bible").append(row);
-
+      $("#bible").append(row);
+    }
+    ref.references.forEach( function(r) {
+      Tertius.currentBibles().forEach(function (b) {
+        b.lookup(r.bookId, r.chapter, r.startVerse, r.endVerse, Tertius.showBibleResultHandler);
       });
-
-
+    });
+  },
+  showBibleResultHandler: function(b, res) {
+    console.log(b);
+    console.log("Name :" + b.name);
+    res.forEach(function (r) {
+      // Find cell for this reference
+      var key = b.name+"_"+r.book + "_" + r.chapter + "_" + r.verse;
+      console.log(key);
+      $("#"+key).html(r.content);
     });
   },
 

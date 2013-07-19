@@ -1,0 +1,119 @@
+/* Ruby text*/
+body.notIE ruby {
+    display: inline-table;
+    text-align: center;
+    border-collapse: collapse;
+	border: none;
+    /* border collapse mechanism
+     will be used to adjust vertical alignment */
+    vertical-align: middle;
+    /* if ruby text contains text only
+     and there are two ruby annotations
+     (one placed above the base and one below)
+     then vertical centering roughly aligns baseline of
+     base with baseline of parent */
+    border-bottom: solid 0.75em transparent;
+    /* 0.75em is height of ruby text (0.5000d7 1.2em = 0.6em)
+     plus space between baseline and text-bottom (about 0.15em)
+     this extra border is counter-weight used
+     to restore vertical centering broken
+     by presence of ruby text
+     (in case if there is only one ruby annotation,
+     if there are two annotations
+     then counter-weight is no longer
+     necessary and can be annihilated
+     using border collapse mechanism) */
+}
+
+/* Fixed problem with IE8 and the rtc tag */
+body.ie8 ruby rtc {
+	display: ruby-text;
+	border: solid 1px black;
+}
+
+
+body.notIE  ruby > rt, body.notIE rtc {
+    display: table-header-group;
+}
+
+/* used to move first ruby
+ container above the base */
+body.notIE ruby > rb, body.notIE rbc, ruby > rt + rt, body.notIE rtc + rtc {
+    display: table-row;
+}
+
+/* base and second ruby
+ are formatted as table-rows */
+body.notIE ruby > rt + rt, body.notIE rtc + rtc {
+    border-bottom: hidden;
+}
+
+/* if there are two annotations then extra
+ border is no longer necessary
+ and can be annihilated
+ using border collapse mechanism */
+body.notIE rb, rbc, body.notIE rt, rtc {
+    white-space: nowrap;
+}
+
+/* prohibits line breaks inside ruby text */
+body.notIE rtc > rt, body.notIE rbc > rb {
+    display: table-cell;
+}
+
+/* used to distribute annotations
+ in table like manner */
+body.notIE rtc > rt[rbspan] {
+    column-span: attr(rbspan);
+}
+
+/* ruby text may span several cells */
+body.notIE ruby > rt, body.notIE rtc {
+    font-size: 0.5em;
+    line-height: 1.2em;
+}
+
+/* font-size of ruby text is reduced */
+body.notIE rp {
+    display: none;
+}
+
+/* Addition to add english rbc */
+ruby.syllables rbc rb {
+	
+}
+
+ruby.syllables rbc rb:after {
+	content: "Â·"
+}
+
+ruby.syllables rbc rb:last-child:after {
+	content: "";
+}
+
+ruby.syllables rtc rt {
+	padding-right: 0.5em;
+}
+
+ruby.syllables rtc rt:last-child {
+	padding-right: 0;
+}
+
+
+/* Ensure text is readable by using a unicode */
+body, ruby.unicodeRubyText rt, ruby.unicodeRubyBase rb {
+	font-family: "Arial MS Unicode", sans-serif;
+}
+
+
+ruby {
+	ruby-align: center;
+}
+
+
+body.ie6 ruby rt.small,
+body.ie7 ruby rt.small {
+	
+	padding: 0 1em;
+}
+
