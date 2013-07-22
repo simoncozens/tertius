@@ -3,10 +3,11 @@ Tertius = {
   BibleSources: {},
   setup: function() {
     Tertius.BibleSources.sql.load("net", Tertius.rebuildBibleMenu);
-    Tertius.BibleSources.xml.load("shinkyodo", Tertius.rebuildBibleMenu);
+    Tertius.BibleSources.sql.load("shinkyodo", Tertius.rebuildBibleMenu);
     $("#searchbar").keypress(function(e) {
       if(e.which == 13) {
         Tertius.search();
+        $("#searchbar").blur();
       }
     });
   },
@@ -57,12 +58,8 @@ Tertius = {
     });
   },
   showBibleResultHandler: function(b, res) {
-    console.log(b);
-    console.log("Name :" + b.name);
     res.forEach(function (r) {
-      // Find cell for this reference
       var key = b.name+"_"+r.book + "_" + r.chapter + "_" + r.verse;
-      console.log(key);
       $("#"+key).html(r.content);
     });
   },
