@@ -45,8 +45,7 @@ BibleRefParser = function(ref, uOptions) {
     if (!v2) { v2 = BibleRefParser.booksizes[context.bookId][c]; }
     context.chapter = c;
     result.references.push({
-      bookId: context.bookId,
-      bookOsis: BibleRefParser.bookinfo[context.bookId].osis,
+      bookId: BibleRefParser.bookinfo[context.bookId].osis,
       chapter: c,
       startVerse: v1,
       endVerse: v2
@@ -125,6 +124,15 @@ BibleRefParser = function(ref, uOptions) {
       ref = ref.replace(/^[\s\.,;]*(\d+):(\d+)\s*/,"");
       continue;
     }
+
+    // Next longest match case: ChA
+    mo = ref.match(/^[\s\.]*(\d+)\s*/);
+    if (mo) {
+      addRange(mo[1],1);
+      ref = ref.replace(/^[\s\.,;]*(\d+)\s*/,"");
+      continue;
+    }
+
     // A chapter after a semicolon
     mo = ref.match(/^;\s*(\d+)\s*/);
     if (mo) {
@@ -164,7 +172,7 @@ BibleRefParser.resultMethods = {
       var ref = this.references[this.refPtr];
       if (!ref) return;
       if (this.versePtr === 0) this.versePtr = ref.startVerse;
-      var v = { bookId: ref.bookId, chapter: ref.chapter, verse: this.versePtr, bookOsis: BibleRefParser.bookinfo[ref.bookId].osis, };
+      var v = { bookId: ref.bookId, chapter: ref.chapter, verse: this.versePtr};
       this.versePtr++;
       if (this.versePtr > ref.endVerse) {
         // Go to next reference in chain
@@ -261,7 +269,7 @@ BibleRefParser.regexps["en"] = [
  { re: /^(2nd|ii|sec(ond)?|2)\s*k(gs|ings?|[in])?\b/i},
  { re: /^(1st|first|[1i])\s*ch(ron(icles)?|r)?\b/i},
  { re: /^(1st|first|[1i])\s*ch(ron(icles)?|r)?\b/i},
- { re: /^ez(ra|r)?\b/i,  bookname: "Ezra", longbookname: "Book_of_Ezra", lastchapter: 10 },
+ { re: /^ez(ra|r)?\b/i},
  { re: /^ne(h[ae]miah|h)?\b/i},
  { re: /^es(th(er)?|t)?\b/i},
  { re: /^j(ob|[bo])\b/i},
@@ -307,11 +315,11 @@ BibleRefParser.regexps["en"] = [
  { re: /^he(brews?|b)?\b/i},
  { re: /^j(a(mes?|[ms])|ms|[am])\b/i},
  { re: /^(1st|first|[1i])\s*p(et(er|e)?|[et])?\b/i},
- { re: /^(2nd|ii|sec(ond)?|2)\s*p(et(er|e)?|[et])?\b/i,bookname: "2 Peter", longbookname: "Second_Epistle_of_Peter", lastchapter: 3 },
+ { re: /^(2nd|ii|sec(ond)?|2)\s*p(et(er|e)?|[et])?\b/i},
  { re: /^(1st|first|[1i])\s*j(ohn|[no])\b/i},
  { re: /^(2nd|ii|sec(ond)?|2)\s*j(ohn|[no])\b/i},
  { re: /^(3rd|iii|third|3)\s*j(ohn|[no])\b/i},
- { re: /^(3rd|iii|third|3)\s*j(ohn|[no])\b/i,  bookname: "Jude", longbookname: "Epistle_of_Jude", lastchapter: 1 },
+ { re: /^(3rd|iii|third|3)\s*j(ohn|[no])\b/i},
  { re: /^r(ev(elations?)?|[ev])\b/i},
 ];
 
