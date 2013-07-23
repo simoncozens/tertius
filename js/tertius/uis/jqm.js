@@ -16,10 +16,11 @@ Tertius.UIs.JQM = {
   setup: function () {
     $("#searchbar").keypress(function(e) {
       if(e.which == 13) {
-        Tertius.search($("#searchbar").val());
+        //Tertius.search($("#searchbar").val());
         $("#searchbar").blur();
       }
     });
+    $("#searchbar").change(function() { Tertius.search($("#searchbar").val()); });
   },
   prepareVerseResults: function(i) {
     $("#bible").empty();    
