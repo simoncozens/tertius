@@ -15,20 +15,22 @@ Tertius.BibleSources.xml = {
     });
   },
 
-  lookup: function(book, chapter, v1, v2, cb) {
-    var versit = this.evaluate("//bible/book[@num=\""+book+"\"]/chapter[@num="+chapter+"]/verse[@num >= "+v1+" and @num <= "+v2+"]", this, null, 0, null);
+  _search: function(query, cb) {
+    var versit = this.evaluate(query, this, null, 0, null);
     var results = [];
     while (verse = versit.iterateNext()) {
-      results.push({ book: book,
-                     chapter: chapter,
+      results.push({ book: verse.parentNode.parentNode.getAttribute("num"),
+                     chapter: verse.parentNode.getAttribute("num"),
                      verse: verse.getAttribute("num"),
                      content: (new XMLSerializer()).serializeToString(verse)
                    });
     }
     cb(this,results);
   },
-
-  search: function() {
-
+  lookup: function(book, chapter, v1, v2, cb) {
+    this._search("//bible/book[@num=\""+book+"\"]/chapter[@num="+chapter+"]/verse[@num >= "+v1+" and @num <= "+v2+"]", cb);
+  },
+  search: function(text, cb) {
+    this._search("//text()[contains(.,'"+text+"')]/ancestor::verse", cb);
   }
 };

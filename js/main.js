@@ -10,11 +10,17 @@ Tertius = {
   },
   search: function(ref) {
     var iterators = [];
-    var bibleRef = BibleRefParser(ref);
-    if (bibleRef) {
-      return this.showBible(bibleRef);
-    }
-    // It's a word search
+    try {
+      var bibleRef = BibleRefParser(ref);
+      if (bibleRef) {
+        return this.showBible(bibleRef);
+      }
+    } catch (e) {
+      Tertius.UI.prepareSearchResults(ref);
+      Tertius.UI.currentBibles().forEach(function (b) {
+        b.search(ref, Tertius.UI.showSearchResultHandler);
+      });      
+    };
   },
   showBible: function(ref) {
     // Prepare rows to receive results
