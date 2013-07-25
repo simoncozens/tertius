@@ -3,10 +3,11 @@ Tertius = {
   BibleSources: {},
   state: {},
   setup: function() {
-    Tertius.UI = Tertius.UIs.JQM;
+    Tertius.UI = Tertius.config.UI;
     var env = (window.device && window.device.platform) ? Tertius.BibleSources.sql : Tertius.BibleSources.xml;
-    env.load("net", Tertius.UI.rebuildBibleMenu);
-    env.load("shinkyodo", Tertius.UI.rebuildBibleMenu);
+    Tertius.config.bibles.forEach(function(b) {
+      env.load(b, Tertius.UI.rebuildBibleMenu);
+    });
     Tertius.UI.setup();
   },
   search: function(ref) {
