@@ -1,3 +1,42 @@
+/* 
+SQL Bible driver
+================
+
+On mobile devices, verse lookup and searching is much faster if it's not all
+done in memory and if it's backed by something like SQLite to improve the
+retrieval. With the Cordova platform this is something we can achieve,
+although it means squeezing the text into a SQLite database.
+
+In the mobile Tertius app, we use a hacked version of the Cordova SQLite
+plugin which copies the databases from the app's Resources directory into
+the user's Documents directory.
+
+Expectations
+------------
+
+To concoct a Bible SQLite file for Tertius, first create the following
+schema:
+
+    CREATE TABLE bible (book, chapter, verse, content TEXT, PRIMARY KEY(book, chapter, verse));
+    CREATE TABLE metadata (k,v);
+
+The metadata table is a simple key-value store. You will want to provide
+the key `abbrev`, which is the abbreviated name of the Bible. Other
+metadata keys will be defined soon.
+
+Now put your Bible content in, using OSIS book abbreviations for the book
+column and HTML text for the content column.
+
+If you want to provide full-text search with proper stemming and tokenizing
+and so on, then do this:
+
+  CREATE VIRTUAL TABLE bible_fts USING fts3(book, chapter, verse, content TEXT);
+  INSERT INTO metadata VALUES ("fts", 1);
+
+And insert plain-text content into the `bible_fts` table.
+
+*/
+
 Tertius.BibleSources.sql = {
   load: function (name,cb) {
     var bible = window.sqlitePlugin.openDatabase({name: name});

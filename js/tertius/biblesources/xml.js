@@ -1,3 +1,37 @@
+/* 
+XML Bible driver
+================
+
+When running Tertius on a desktop browser, one does not have the power of
+a SQLite engine available. (Well, there's WebSQL in HTML5 but that only lets
+you store up to 5Mb and pre-loading is impossible, so effectively useless
+for our purposes.) So for rapid prototyping/development, and also for using
+in web environments, there's a second driver for Bible data. This uses
+XML files delivered over AJAX, searched using XPath. There's a huge
+start-up time particularly when parsing large Bible files, and I don't
+want to think about the memory usage, but once it's loaded up it's surprisingly
+fast.
+
+Expectations
+------------
+
+Oh, it would be lovely to be able to use some kind of standard Bible markup
+schema in the XML, but see IMPLEMENTATION.md for why that isn't happening.
+Instead, your Bible XML needs to look like this:
+
+  <bible name="KJV">
+    <book num="Gen">
+      <chapter num="1">
+      <verse num="1">In the beginning God created the heaven and the earth.</verse>
+      </chapter>
+    </book>
+  </bible>
+
+Everything inside a verse tag is displayed as HTML. Yes, that's `<book num="...">`.
+Horrible but harmless.
+
+*/
+
 Tertius.BibleSources.xml = {
   load: function (name,cb) {
     console.log("Loading "+name);
