@@ -16,7 +16,7 @@ Tertius.BibleSources.xml = {
   },
 
   lookup: function(book, chapter, v1, v2, cb) {
-    var versit = this.evaluate("//bible/book[@num="+book+"]/chapter[@num="+chapter+"]/verse[@num >= "+v1+" and @num <= "+v2+"]", this, null, 0, null);
+    var versit = this.evaluate("//bible/book[@num=\""+book+"\"]/chapter[@num="+chapter+"]/verse[@num >= "+v1+" and @num <= "+v2+"]", this, null, 0, null);
     var results = [];
     while (verse = versit.iterateNext()) {
       results.push({ book: book,
