@@ -3,7 +3,7 @@ Tertius = {
   BibleSources: {},
   setup: function() {
     Tertius.UI = Tertius.UIs.JQM;
-    var env = (device && device.platform) ? Tertius.BibleSources.sql : Tertius.BibleSources.xml;
+    var env = (window.device && window.device.platform) ? Tertius.BibleSources.sql : Tertius.BibleSources.xml;
     env.load("net", Tertius.UI.rebuildBibleMenu);
     env.load("shinkyodo", Tertius.UI.rebuildBibleMenu);
     Tertius.UI.setup();
