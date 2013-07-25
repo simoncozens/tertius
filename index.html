@@ -21,19 +21,29 @@
     <body class="modern notIE">
 <div data-role="page" id="page1">
 <div data-role="header">
-<h1>Tertius</h1>
-</div>
-
   <table width="100%">
     <tr>
-     <td width="70%">
-      <input type="search" name="search" id="searchbar" value="" />
-    </td>
-    <td width="30%">
-      <select id="versions" name="versions" data-native-menu="false" multiple="1"/>
+        <td>
+            <a href="index.html" data-role="button" data-inline="true" id="verseSelect" data-icon="grid" data-iconpos="notext">Verse</a>
+            <a href="index.html" data-role="button" data-inline="true" id="searchButton" data-icon="search" data-iconpos="notext">Search</a>
+            <a href="index.html" data-role="button" data-inline="true" id="prevC" data-icon="arrow-l" data-iconpos="notext">Prev Chapter</a>
+            <a href="index.html" data-role="button" data-inline="true" id="nextC" data-icon="arrow-r" data-iconpos="notext">Next Chapter</a>
+        </td>
+        <td width="50%" id="searchbarCont">
+        <input type="search" name="search" id="searchbar" value="" />
+        </td>
+        <td width="50%" id="verserefbarCont">
+        <input disabled="true" name="verseref" id="verserefbar" value="" />
+        </td>
+        <td>
+            <select id="versions" name="versions" data-inline="true" data-native-menu="false" multiple="1"/>
+        </td>
+        <td>
+            <a href="index.html" data-role="button" data-inline="true" id="settings" data-icon="gear" data-iconpos="notext">Settings</a>
+        </td>        
     </tr>
-  </tr>
 </table>
+</div>
 
 
 <div data-role="content">

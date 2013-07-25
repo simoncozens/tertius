@@ -21,6 +21,17 @@ Tertius.UIs.JQM = {
       }
     });
     $("#searchbar").change(function() { Tertius.search($("#searchbar").val()); });
+    this.gotoVerseMode();
+    $("#searchButton").click(this.gotoSearchMode);
+    $("#verseSelect").click(this.gotoVerseMode);
+  },
+  gotoSearchMode: function() {
+    $("#prevC,#nextC,#verserefbarCont,#searchButton").hide();
+    $("#verseSelect,#searchbarCont").show();
+  },
+  gotoVerseMode: function () {
+    $("#prevC,#nextC,#verserefbarCont,#searchButton").show();
+    $("#searchbarCont").hide();
   },
   prepareVerseResults: function(i) {
     $("#bible").empty();    
