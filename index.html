@@ -19,36 +19,42 @@
         <script src="js/vendor/modernizr-2.6.2.min.js"></script>
     </head>
     <body class="modern notIE">
-<div data-role="page" id="page1">
-<div data-role="header">
-  <table width="100%">
-    <tr>
-        <td>
-            <a href="index.html" data-role="button" data-inline="true" id="verseSelect" data-icon="grid" data-iconpos="notext">Verse</a>
-            <a href="index.html" data-role="button" data-inline="true" id="searchButton" data-icon="search" data-iconpos="notext">Search</a>
-            <a href="index.html" data-role="button" data-inline="true" id="prevC" data-icon="arrow-l" data-iconpos="notext">Prev Chapter</a>
-            <a href="index.html" data-role="button" data-inline="true" id="nextC" data-icon="arrow-r" data-iconpos="notext">Next Chapter</a>
-        </td>
-        <td width="50%" id="searchbarCont">
-        <input type="search" name="search" id="searchbar" value="" />
-        </td>
-        <td width="50%" id="verserefbarCont">
-        <input disabled="true" name="verseref" id="verserefbar" value="" />
-        </td>
-        <td>
-            <select id="versions" name="versions" data-inline="true" data-native-menu="false" multiple="1"/>
-        </td>
-        <td>
-            <a href="index.html" data-role="button" data-inline="true" id="settings" data-icon="gear" data-iconpos="notext">Settings</a>
-        </td>        
-    </tr>
-</table>
+<div data-role="page" id="main">
+    <div data-role="header">
+      <table width="100%">
+        <tr>
+            <td>
+                <a href="#verseSelector" data-role="button" data-inline="true" id="verseSelect" data-icon="grid" data-iconpos="notext">Verse</a>
+                <a href="index.html" data-role="button" data-inline="true" id="searchButton" data-icon="search" data-iconpos="notext">Search</a>
+                <a href="index.html" data-role="button" data-inline="true" id="prevC" data-icon="arrow-l" data-iconpos="notext">Prev Chapter</a>
+                <a href="index.html" data-role="button" data-inline="true" id="nextC" data-icon="arrow-r" data-iconpos="notext">Next Chapter</a>
+            </td>
+            <td width="50%" id="searchbarCont">
+            <input type="search" name="search" id="searchbar" value="" />
+            </td>
+            <td width="50%" id="verserefbarCont">
+            <input disabled="true" name="verseref" id="verserefbar" value="" />
+            </td>
+            <td>
+                <select id="versions" name="versions" data-inline="true" data-native-menu="false" multiple="1"/>
+            </td>
+            <td>
+                <a href="index.html" data-role="button" data-inline="true" id="settings" data-icon="gear" data-iconpos="notext">Settings</a>
+            </td>        
+        </tr>
+    </table>
+    </div>
+
+
+    <div data-role="content">
+            <table id="bible">
+            </table>
+    </div>
 </div>
 
-
-<div data-role="content">
-        <table id="bible">
-        </table>
+<div data-role="page" id="verseSelector">
+<ul data-role="listview" id="verseList">
+</ul>
 </div>        
 
         <script src="//ajax.googleapis.com/ajax/libs/jquery/1.10.1/jquery.min.js"></script>
@@ -61,7 +67,7 @@
         <script src="js/tertius/biblesources/sql.js"></script>
         <script src="js/tertius/uis/jqm.js"></script>
         <script>
-$(document).on("pageinit", Tertius.setup);
+$( function () { Tertius.setup() });
         </script>
     </body>
 </html>

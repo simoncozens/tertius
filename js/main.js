@@ -1,6 +1,7 @@
 Tertius = {
   Bibles: {},
   BibleSources: {},
+  state: {},
   setup: function() {
     Tertius.UI = Tertius.UIs.JQM;
     var env = (window.device && window.device.platform) ? Tertius.BibleSources.sql : Tertius.BibleSources.xml;
@@ -32,5 +33,8 @@ Tertius = {
       });
     });
   },
-
+  showChapter: function (book, chapter, cb) {
+    this.search(Tertius.state.book+ " "+Tertius.state.chapter);
+    if (cb) cb();
+  }
 };
