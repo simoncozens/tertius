@@ -110,7 +110,7 @@ Tertius.UIs.JQM = {
   showBibleResultHandler: function(b, res) {
     res.forEach(function (r) {
       var key = b.name+"_"+r.book + "_" + r.chapter + "_" + r.verse;
-      $("#"+key).html(r.content);
+      $("#"+key).html(Tertius.processContent(r.content));
     });
   },
   prepareSearchResults: function(t) {

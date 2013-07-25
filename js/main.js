@@ -37,5 +37,8 @@ Tertius = {
   showChapter: function (book, chapter, cb) {
     this.search(Tertius.state.book+ " "+Tertius.state.chapter);
     if (cb) cb();
+  },
+  processContent: function(c) {
+    return c; // Until we have lexicons etc. working
   }
 };
