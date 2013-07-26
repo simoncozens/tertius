@@ -5,7 +5,7 @@ Tertius = {
   nonce: 0,
   setup: function() {
     Tertius.UI = Tertius.config.UI;
-    var env = (window.device && window.device.platform) ? Tertius.BibleSources.sql : Tertius.BibleSources.xml;
+    var env = Tertius.BibleSources[Tertius.config.loader];
     Tertius.config.bibles.forEach(function(b) {
       env.load(b, Tertius.UI.rebuildBibleMenu);
     });
