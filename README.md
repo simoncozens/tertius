@@ -13,6 +13,8 @@ End users can use Tertius as a web-based application or as a mobile application.
 The mobile application is much faster and more efficient, but the web app should
 work everywhere.
 
+You can try out Tertius at http://simoncozens.github.io/tertius/
+
 Developers
 ----------
 
