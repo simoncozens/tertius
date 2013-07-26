@@ -1,6 +1,23 @@
 Some Implementation Notes
 =========================
 
+Architecture
+------------
+
+The main architecture behind Tertius involves abstracting out the display
+and data store/access functionality into separate modules, leaving a thin
+module to negotiate the core functionality with the user. (Sometimes 
+erroneously called an MVC architecture; PAC is closer to the mark.)
+
+If you are building your own application, you will probably want to begin
+by overriding some or all of the display sections: create your own
+`Tertius.UIs.whatever` module conforming to the same interface as
+`Tertius.UIs.JQM` and set that to be the UI in the config file; at the same
+time, mess with the HTML and CSS.
+
+Similarly if you want to do data handling better, write your own 
+`Tertius.BibleSources` module and override `Tertius.setup`.
+
 Doing it right versus doing it now
 ----------------------------------
 
