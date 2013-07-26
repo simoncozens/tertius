@@ -6,7 +6,7 @@ Tertius.UIs.JQM = {
     $("#versions").empty();
     $("#versions").append('<option data-placeholder="true">Select a Bible version</option>');
     for (var ver in Tertius.Bibles) {
-      $("#versions").append("<option name=\""+ver+"\">"+Tertius.Bibles[ver].name+"</option>");
+      $("#versions").append("<option name=\""+ver+"\">"+Tertius.Bibles[ver].abbrev+"</option>");
     }
     $("#versions").val([  $("#versions").children().first().next().val() ]);
     $("#versions").selectmenu("refresh");
@@ -93,7 +93,7 @@ Tertius.UIs.JQM = {
     $("#bible").empty();
     var head= $('<tr class="bibleheader"><td/></tr>');
     Tertius.UI.currentBibles().forEach(function (b) {
-      head.append("<th>"+b.name+"</th>");
+      head.append("<th>"+b.abbrev+"</th>");
     });
     $("#bible").append(head);
     var v;
@@ -102,14 +102,14 @@ Tertius.UIs.JQM = {
       var row = $('<tr id="'+key+'"/>');
       row.append('<td>'+v.chapter+":"+v.verse+'</td>');
       Tertius.UI.currentBibles().forEach(function (b) {
-        row.append('<td id="'+b.name+"_"+key+'"></td>');
+        row.append('<td id="'+b.abbrev+"_"+key+'"></td>');
       });
       $("#bible").append(row);
     }
   },
   showBibleResultHandler: function(b, res) {
     res.forEach(function (r) {
-      var key = b.name+"_"+r.book + "_" + r.chapter + "_" + r.verse;
+      var key = b.abbrev+"_"+r.book + "_" + r.chapter + "_" + r.verse;
       $("#"+key).html(Tertius.processContent(r.content));
     });
   },
@@ -119,7 +119,7 @@ Tertius.UIs.JQM = {
   showSearchResultHandler: function(b, res) {
     res.forEach(function (r) {
       var key = r.book + " " + r.chapter + ":" + r.verse;
-      $("#bible").append("<tr><th>"+b.name+"</th><th>" + key+ "</th> <td> "+r.content+"</td></tr>");
+      $("#bible").append("<tr><th>"+b.abbrev+"</th><th>" + key+ "</th> <td> "+r.content+"</td></tr>");
     });
   }
 };

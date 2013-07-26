@@ -38,20 +38,20 @@ And insert plain-text content into the `bible_fts` table.
 */
 
 Tertius.BibleSources.sql = {
-  load: function (name,cb) {
-    var bible = window.sqlitePlugin.openDatabase({name: name});
+  load: function (filename,cb) {
+    var bible = window.sqlitePlugin.openDatabase({name: filename});
     $.extend(bible, Tertius.BibleSources.sql);
     bible.transaction(function(tx) {
       var options = {};
       tx.executeSql("select * from metadata", [], function(tx,res) {
-        name = res.rows.item(0).name;
         var len = res.rows.length, i;
         for (i = 0; i < len; i++) {
           var row = res.rows.item(i);
           options[row.k] = row.v;
         }
         bible.options = options;
-        bible.name = options.abbrev;
+        bible.abbrev = options.abbrev;
+        bible.name = options.name;
         Tertius.Bibles[options.abbrev] = bible;
         cb();
       });

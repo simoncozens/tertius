@@ -19,7 +19,7 @@ Oh, it would be lovely to be able to use some kind of standard Bible markup
 schema in the XML, but see IMPLEMENTATION.md for why that isn't happening.
 Instead, your Bible XML needs to look like this:
 
-  <bible name="KJV">
+  <bible name="King James Version" abbrev="KJV">
     <book num="Gen">
       <chapter num="1">
       <verse num="1">In the beginning God created the heaven and the earth.</verse>
@@ -44,7 +44,8 @@ Tertius.BibleSources.xml = {
       console.log("Got text");
       $.extend(bible, Tertius.BibleSources.xml);
       bible.name = bible.documentElement.getAttribute("name");
-      Tertius.Bibles[bible.name] = bible;
+      bible.abbrev = bible.documentElement.getAttribute("abbrev");
+      Tertius.Bibles[bible.abbrev] = bible;
       cb();
     });
   },
