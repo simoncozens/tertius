@@ -1,5 +1,5 @@
 Tertius.config = {
-	bibles: [ "net", "shinkyodo" ],
+	bibles: [ "LEB" ],
 	UI: Tertius.UIs.JQM,
 	start: ["John", 3]
 };
