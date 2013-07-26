@@ -84,14 +84,13 @@ Tertius.UIs.JQM = {
         li.attr("data-bible-chapter", i);
         $("#verseList").append(li);
     };
-    $('#verseList').on('click', 'li', Tertius.UI.gotoChapter);
+    $('#verseList').one('click', 'li', Tertius.UI.gotoChapter);
     $("#verseList").listview("refresh");
   },
   gotoVerseMode: function () {
     var that = this;
     $("#prevC,#nextC,#verserefbarCont,#searchButton").show();
     $("#searchbarCont").hide();
-    console.log("Here 1");
     $("#verseSelect").click(function() {
       $("#verseList").empty();
       for (var bk in BibleRefParser.bookinfo) {
@@ -99,7 +98,7 @@ Tertius.UIs.JQM = {
         li.attr("data-bible-book-osis", bk);
         $("#verseList").append(li);
       }
-      $('#verseList').on('click', 'li', that.chapterMenuBuilder);
+      $('#verseList').one('click', 'li', that.chapterMenuBuilder);
       $("#verseList").listview("refresh");
     });
     Tertius.state.mode = "verse";
