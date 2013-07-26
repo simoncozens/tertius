@@ -60,8 +60,10 @@ Tertius.UIs.JQM = {
     Tertius.UI.showChapter();
   },
   showChapter: function () {
-    Tertius.showChapter();
-    $("#verserefbar").val(Tertius.state.book + " " +Tertius.state.chapter);
+    if (Tertius.state.book && Tertius.state.chapter) {
+      Tertius.showChapter();
+      $("#verserefbar").val(Tertius.state.book + " " +Tertius.state.chapter);
+    }
     $.mobile.changePage("#main");
   },
   nextChapter: function() {
