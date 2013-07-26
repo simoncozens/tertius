@@ -43,6 +43,9 @@ Tertius.UIs.JQM = {
     $("#verseSelect").click(this.gotoVerseMode);
     $("#nextC").click(this.nextChapter);
     $("#prevC").click(this.prevChapter);
+    $("#bible").on("click", "a[data-role=popup-trigger]", function(){
+      $("#"+($(this).data("popup-id"))).popup("open");
+    })
 
   },
   search: function() {
@@ -106,7 +109,7 @@ Tertius.UIs.JQM = {
     Tertius.state.mode = "verse";
   },
   prepareVerseResults: function(i) {
-    $("#bible").empty();
+    Tertius.UI.preprocessResults();
     var head= $('<tr class="bibleheader"><td/></tr>');
     Tertius.UI.currentBibles().forEach(function (b) {
       head.append("<th>"+b.abbrev+"</th>");
@@ -128,14 +131,24 @@ Tertius.UIs.JQM = {
       var key = b.abbrev+"_"+r.book + "_" + r.chapter + "_" + r.verse;
       $("#"+key).html(Tertius.processContent(r.content));
     });
-  },
-  prepareSearchResults: function(t) {
-    $("#bible").empty();
+    Tertius.UI.postprocessResults();
   },
   showSearchResultHandler: function(b, res) {
     res.forEach(function (r) {
       var key = r.book + " " + r.chapter + ":" + r.verse;
-      $("#bible").append("<tr><th>"+b.abbrev+"</th><th>" + key+ "</th> <td> "+r.content+"</td></tr>");
+      $("#bible").append("<tr><th>"+b.abbrev+"</th><th>" + key+ "</th> <td> "+Tertius.processContent(r.content).html()+"</td></tr>");
     });
+    Tertius.UI.postprocessResults();
+  },
+  prepareSearchResults: function(t){
+    Tertius.UI.preprocessResults();
+  },
+  preprocessResults: function() {
+    $("#bible").empty();
+    $("div[data-role=popup]").remove();
+
+  },
+  postprocessResults: function() {
+    $("div[data-role=popup]").popup().trigger("create");
   }
 };

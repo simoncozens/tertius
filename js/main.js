@@ -2,6 +2,7 @@ Tertius = {
   Bibles: {},
   BibleSources: {},
   state: {},
+  nonce: 0,
   setup: function() {
     Tertius.UI = Tertius.config.UI;
     var env = (window.device && window.device.platform) ? Tertius.BibleSources.sql : Tertius.BibleSources.xml;
@@ -16,6 +17,7 @@ Tertius = {
     }
   },
   search: function(ref) {
+    Tertius.nonce = 0;
     var iterators = [];
     try {
       var bibleRef = BibleRefParser(ref);
@@ -40,10 +42,18 @@ Tertius = {
     });
   },
   showChapter: function (book, chapter, cb) {
+    Tertius.nonce = 0;
     this.search(Tertius.state.book+ " "+Tertius.state.chapter);
     if (cb) cb();
   },
   processContent: function(c) {
-    return c; // Until we have lexicons etc. working
+    c = $(c);
+    c.find("note").replaceWith(function() {
+      var note = $("<p></p>").append(this.innerHTML);
+      Tertius.nonce++;
+      var popup = $('<div data-role=\"popup\" data-overlay-theme="a" id=\"popup-'+Tertius.nonce+'\" data-tolerance="15">').append(note);
+      return $("<span><a data-role=\"popup-trigger\" data-popup-id=\"popup-"+Tertius.nonce+"\"><sup>"+Tertius.nonce+"</sup></a></span>").append(popup);
+    });
+    return c;
   }
 };
