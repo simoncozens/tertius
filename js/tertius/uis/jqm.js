@@ -67,10 +67,12 @@ Tertius.UIs.JQM = {
     $.mobile.changePage("#main");
   },
   nextChapter: function() {
+    if (Tertius.state.chapter == BibleRefParser.bookinfo[Tertius.state.book].chapters.length-1) return;
     Tertius.state.chapter++; // Check if it's off the end
     Tertius.UI.showChapter();
   },
   prevChapter: function() {
+    if (Tertius.state.chapter == 1) return;
     Tertius.state.chapter--; // Check if it's off the end
     Tertius.UI.showChapter();
   },
@@ -78,7 +80,7 @@ Tertius.UIs.JQM = {
     var book = $(this).attr("data-bible-book-osis");
     $("#verseList").empty();
     var chapters = BibleRefParser.bookinfo[book].chapters;
-    for (var i=1; i <= chapters.length; i++) {
+    for (var i=1; i < chapters.length; i++) {
         var li = $("<li><a>"+i+"</a></li>");
         li.attr("data-bible-book-osis", book);
         li.attr("data-bible-chapter", i);
