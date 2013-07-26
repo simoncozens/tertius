@@ -9,6 +9,11 @@ Tertius = {
       env.load(b, Tertius.UI.rebuildBibleMenu);
     });
     Tertius.UI.setup();
+    if (Tertius.config.start) {
+      Tertius.state.book = Tertius.config.start[0];
+      Tertius.state.chapter = Tertius.config.start[1];
+      this.showChapter();
+    }
   },
   search: function(ref) {
     var iterators = [];
