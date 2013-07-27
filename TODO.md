@@ -1,6 +1,6 @@
-* Verse wheel/grid/etc.
-* Ensure at least one text is selected
 * Settings
+* Strongs Hebrew lexicon
+* Free Greek lexicon?
 
 Requests
 --------
