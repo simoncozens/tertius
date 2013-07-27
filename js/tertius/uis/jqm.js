@@ -10,10 +10,19 @@ Tertius.UIs.JQM = {
     }
     $("#versions").val([  $("#versions").children().first().next().val() ]);
     $("#versions").selectmenu("refresh");
+    this.decorateHack();
 
   },
   currentBibles: function() {
     return $("#versions").val().map(function (x) {return Tertius.Bibles[x]});
+  },
+  decorateHack: function() {
+      // Decorate the menu items with the name.
+      var l = 0;
+      var a = $("ul#versions-menu li[data-placeholder!=true] div div a");
+      for (var ver in Tertius.Bibles) {
+        $(a[l++]).append("<div class=\"bible-fullname\">"+Tertius.Bibles[ver].name+"</div>");
+      }
   },
   setup: function () {
     var that = this;
@@ -24,20 +33,11 @@ Tertius.UIs.JQM = {
       }
     });
     $("#searchbar").change(this.search);
-    var decorateHack = function() {
-      // Decorate the menu items with the name.
-      var l = 0;
-      var a = $("ul#versions-menu li[data-placeholder!=true] div div a");
-      for (var ver in Tertius.Bibles) {
-        $(a[l++]).append("<div class=\"bible-fullname\">"+Tertius.Bibles[ver].name+"</div>");
-      }
-    };
 
     $("#versions").change(function() {
-      decorateHack();
+      that.decorateHack();
       if (Tertius.state.mode == "search") { that.search(); } else { that.showChapter(); }
     });
-    decorateHack();
     this.gotoVerseMode();
     $("#searchButton").click(this.gotoSearchMode);
     $("#verseSelect").click(this.gotoVerseMode);
