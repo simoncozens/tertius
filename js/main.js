@@ -6,15 +6,17 @@ Tertius = {
   setup: function() {
     Tertius.UI = Tertius.config.UI;
     var env = Tertius.BibleSources[Tertius.config.loader];
-    Tertius.config.bibles.forEach(function(b) {
-      env.load(b, Tertius.UI.rebuildBibleMenu);
-    });
     Tertius.UI.setup();
     if (Tertius.config.start) {
       Tertius.state.book = Tertius.config.start[0];
       Tertius.state.chapter = Tertius.config.start[1];
-      this.UI.showChapter();
     }
+    Tertius.config.bibles.forEach(function(b) {
+      env.load(b, function() {
+        Tertius.UI.rebuildBibleMenu();
+        if (Tertius.config.start) Tertius.UI.showChapter();
+      });
+    });
   },
   search: function(ref) {
     Tertius.nonce = 0;
