@@ -17,7 +17,7 @@ Expectations
 To concoct a Bible SQLite file for Tertius, first create the following
 schema:
 
-    CREATE TABLE bible (book, chapter, verse, content TEXT, PRIMARY KEY(book, chapter, verse));
+    CREATE TABLE bible (book, chapter INTEGER, verse INTEGER, content TEXT, PRIMARY KEY(book, chapter, verse));
     CREATE TABLE metadata (k,v);
 
 The metadata table is a simple key-value store. You will want to provide
@@ -30,7 +30,7 @@ column and HTML text for the content column.
 If you want to provide full-text search with proper stemming and tokenizing
 and so on, then do this:
 
-  CREATE VIRTUAL TABLE bible_fts USING fts3(book, chapter, verse, content TEXT);
+  CREATE VIRTUAL TABLE bible_fts USING fts3(book, chapter INTEGER, verse INTEGER, content TEXT);
   INSERT INTO metadata VALUES ("fts", 1);
 
 And insert plain-text content into the `bible_fts` table.
@@ -47,6 +47,7 @@ Tertius.BibleSources.sql = {
         var len = res.rows.length, i;
         for (i = 0; i < len; i++) {
           var row = res.rows.item(i);
+          console.log(row.k+": "+row.v);
           options[row.k] = row.v;
         }
         bible.options = options;
