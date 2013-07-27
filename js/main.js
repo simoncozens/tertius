@@ -13,7 +13,7 @@ Tertius = {
     if (Tertius.config.start) {
       Tertius.state.book = Tertius.config.start[0];
       Tertius.state.chapter = Tertius.config.start[1];
-      this.showChapter();
+      this.UI.showChapter();
     }
   },
   search: function(ref) {
