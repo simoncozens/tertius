@@ -30,6 +30,8 @@ Instead, your Bible XML needs to look like this:
 Everything inside a verse tag is displayed as HTML. Yes, that's `<book num="...">`.
 Horrible but harmless.
 
+For some free Bibles in this format, see https://github.com/simoncozens/open-source-bible-data
+
 */
 
 Tertius.BibleSources.xml = {
