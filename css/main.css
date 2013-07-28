@@ -10,3 +10,5 @@
 @media screen and (device-aspect-ratio: 2/3) {
 	#verserefbarCont { width: 90px;}
 }
+sup { font-size: 80%;}
+transChange { font-style: italic; }
