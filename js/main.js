@@ -54,7 +54,7 @@ Tertius = {
       var note = $("<p></p>").append(this.innerHTML);
       Tertius.nonce++;
       var popup = $('<div data-role=\"popup\" data-overlay-theme="a" id=\"popup-'+Tertius.nonce+'\" data-tolerance="15">').append(note);
-      return $("<span><a data-role=\"popup-trigger\" data-popup-id=\"popup-"+Tertius.nonce+"\"><sup>"+Tertius.nonce+"</sup></a></span>").append(popup);
+      return $("<span><a data-role=\"popup-trigger\" data-popup-id=\"popup-"+Tertius.nonce+"\"> <sup>"+Tertius.nonce+"</sup> </a></span>").append(popup);
     });
     return c;
   }
