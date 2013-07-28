@@ -14,7 +14,7 @@ Tertius = {
     Tertius.config.bibles.forEach(function(b) {
       env.load(b, function() {
         Tertius.UI.rebuildBibleMenu();
-        if (Tertius.config.start) Tertius.UI.showChapter();
+        if (Tertius.config.start && b == Tertius.config.bibles[Tertius.config.bibles.length-1]) Tertius.UI.showChapter();
       });
     });
   },
