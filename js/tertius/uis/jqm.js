@@ -46,6 +46,8 @@ Tertius.UIs.JQM = {
     $("#bible").on("click", "a[data-role=popup-trigger]", function(){
       $("#"+($(this).data("popup-id"))).popup("open");
     })
+    $.event.special.swipe.verticalDistanceThreshold = 30;
+    $.event.special.swipe.horizontalDistanceThreshold = 30;
     $("#bible").on("swipeleft", function() {if (Tertius.state.mode == "verse") {that.nextChapter(); } });
     $("#bible").on("swiperight", function() {if (Tertius.state.mode == "verse") {that.prevChapter(); } });
   },
