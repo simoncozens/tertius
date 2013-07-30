@@ -45,11 +45,13 @@ Tertius.UIs.JQM = {
     $("#prevC").click(this.prevChapter);
     $("#bible").on("click", "a[data-role=popup-trigger]", function(){
       $("#"+($(this).data("popup-id"))).popup("open");
-    })
+    });
     $.event.special.swipe.verticalDistanceThreshold = 30;
     $.event.special.swipe.horizontalDistanceThreshold = 30;
     $("#bible").on("swipeleft", function() {if (Tertius.state.mode == "verse") {that.nextChapter(); } });
     $("#bible").on("swiperight", function() {if (Tertius.state.mode == "verse") {that.prevChapter(); } });
+    $("#history").click(function() { Tertius.HistoryAndBookmarks.show("history"); });
+    $("#bookmarks").click(function() { Tertius.HistoryAndBookmarks.show("bookmarks"); });
   },
   search: function() {
     Tertius.search($("#searchbar").val());
@@ -91,7 +93,7 @@ Tertius.UIs.JQM = {
         li.attr("data-bible-book-osis", book);
         li.attr("data-bible-chapter", i);
         $("#verseList").append(li);
-    };
+    }
     $('#verseList').one('click', 'li', Tertius.UI.gotoChapter);
     $("#verseList").listview("refresh");
   },
@@ -153,5 +155,8 @@ Tertius.UIs.JQM = {
   },
   postprocessResults: function() {
     $("div[data-role=popup]").popup().trigger("create");
+  },
+  showHistoryBookmarks: function (actingAs, list) {
+    console.log(JSON.stringify(list));
   }
 };
