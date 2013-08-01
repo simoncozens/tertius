@@ -38,7 +38,7 @@ Tertius.BibleSources.xml = {
   load: function (name,cb) {
     console.log("Loading "+name);
     $.ajax({
-      url: name+".xml",
+      url: "bibles/"+name+".xml",
       dataType: "xml",
       async: false,
       error: function (j, text, error) { console.log(text);  console.log(j);}

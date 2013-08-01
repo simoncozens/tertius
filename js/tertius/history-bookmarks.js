@@ -28,20 +28,26 @@ Tertius.HistoryAndBookmarks = {
     } );
     Tertius.UI.showHistoryBookmarks(actingAs, list);
   },
-  select: function () {
-    var entry = SpinningWheel.getSelectedValues().keys[0];
-    if (entry == -1) {
-      Vibi.Bookmarks.record();
+  select: function (actingAs, id) {
+    var list = Tertius.HistoryAndBookmarks[actingAs];
+    if (id == -1) {
+      Tertius.HistoryAndBookmarks.record(actingAs);
       return;
     }
     // Move to front
-    Vibi.verseSelection = Vibi.bookmarks[entry];
-    Vibi.bookmarks.unshift(Vibi.bookmarks.splice(entry,1)[0]);
-    Vibi.Bookmarks.save();
-    Vibi.bookChangeHandler();
+    var entry= list[id];
+    list.unshift(list.splice(entry,1)[0]);
+    Tertius.HistoryAndBookmarks.save();
+    // Replay the latest entry
+    Tertius.UI.setCurrentBibles(entry.bibles);
+    if (entry.type == "search") return Tertius.wordSearch(entry.terms);
+    if (entry.type == "bible") {
+      // XXX Unsmash the reference
+      entry.reference = BibleRefParser(BibleRefParser.resultMethods.toString.bind(entry.reference)());
+      return Tertius.showBible(entry.reference);
+    }
   },
-  record: function (actingAs, obj) {
-    obj.bibles = Tertius.UI.currentBibles().map(function (x) {return x.abbrev; });
+  record: function (actingAs) {
     var list = Tertius.HistoryAndBookmarks[actingAs];
     // If this object is already in the list, bring it to the top.
 
@@ -51,6 +57,7 @@ Tertius.HistoryAndBookmarks = {
     var _crappyDeepCompare =  function(o1, o2) { return JSON.stringify(o1) === JSON.stringify(o2); };
 
     var seen = 0;
+    var obj = Tertius.state.currentSearch;
     list.forEach( function(existingEntry, id) {
       if (_crappyDeepCompare(obj,existingEntry)) {
         seen = 1;

@@ -16,6 +16,9 @@ Tertius.UIs.JQM = {
   currentBibles: function() {
     return $("#versions").val().map(function (x) {return Tertius.Bibles[x]});
   },
+  setCurrentBibles: function(babbrevs) {
+    $("#versions").val(babbrevs);
+  },
   decorateHack: function() {
       // Decorate the menu items with the name.
       var l = 0;
@@ -150,13 +153,27 @@ Tertius.UIs.JQM = {
   },
   preprocessResults: function() {
     $("#bible").empty();
-    $("div[data-role=popup]").remove();
+    $("div.footnote").remove();
 
   },
   postprocessResults: function() {
-    $("div[data-role=popup]").popup().trigger("create");
+    $("div.footnote").popup().trigger("create");
   },
   showHistoryBookmarks: function (actingAs, list) {
-    console.log(JSON.stringify(list));
+    console.log("Hitme "+actingAs);
+    var popup = $("#"+actingAs+"Menu");
+    var listview = popup.find("ul");
+    listview.find("li[data-role!=divider]").remove();
+    list.forEach(function(li, id) {
+      console.log("Adding "+li);
+      var item = $("<li>"+li+"</li>");
+      item.click(function() { 
+        Tertius.HistoryAndBookmarks.select(actingAs, id);
+        popup.popup("close");
+      });
+      listview.append(item);
+    });
+    listview.listview("refresh");
+    setTimeout(function () { popup.popup("open") },1);
   }
 };
