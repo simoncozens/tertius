@@ -55,6 +55,10 @@ Tertius.UIs.JQM = {
     $("#bible").on("swiperight", function() {if (Tertius.state.mode == "verse") {that.prevChapter(); } });
     $("#history").click(function() { Tertius.HistoryAndBookmarks.show("history"); });
     $("#bookmarks").click(function() { Tertius.HistoryAndBookmarks.show("bookmarks"); });
+    $("#save-bookmark").click(function() { 
+      Tertius.HistoryAndBookmarks.select("bookmarks", -1);
+      $("#bookmarksMenu").popup("close");
+    });
   },
   search: function() {
     Tertius.search($("#searchbar").val());

@@ -16,8 +16,7 @@ Tertius.HistoryAndBookmarks = {
     Tertius.DataStorage.saveJSON("bookmarks", Tertius.HistoryAndBookmarks.bookmarks);
   },
   show: function (actingAs) {
-    var list = {};
-    if (actingAs == "bookmark") list[-1] = "Save as bookmark";
+    var list = [];
     this[actingAs].forEach( function(entry, id) {
       if (entry.type == "bible") {
         list[id] = BibleRefParser.resultMethods.toString.bind(entry.reference)(); // Because JSON splats the prototype
