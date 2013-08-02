@@ -265,7 +265,6 @@ if (!window.Cordova) window.Cordova = window.cordova;
         }
       }
     };
-    console.log("Executing batch");
     exec("executeSqlBatch", {executes: opts}, success, error);
     //exec("backgroundExecuteSqlBatch", {executes: opts}, success, error);
   };
