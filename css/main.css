@@ -12,3 +12,15 @@
 }
 sup { font-size: 80%;}
 transChange { font-style: italic; }
+ .ui-dialog-background {
+ 	    -webkit-filter: blur(5px);	
+    filter: blur(5px);
+    opacity: 0.4;
+ 	display: block !important; }
+
+.in, .out {
+    -webkit-animation-timing-function: ease-in-out;
+    -webkit-animation-duration: 50ms !important;
+}
+input.ui-input-text.ui-slider-input { display: none;}
+.ui-slider-track {margin: 0;}

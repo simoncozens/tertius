@@ -7,17 +7,19 @@ Tertius = {
     Tertius.UI = Tertius.config.UI;
     Tertius.DataStorage = Tertius.config.DataStorage;
     var env = Tertius.BibleSources[Tertius.config.loader];
-    Tertius.UI.setup();
-    Tertius.HistoryAndBookmarks.load(function() {
-      if (Tertius.config.start) {
-        Tertius.state.book = Tertius.config.start[0];
-        Tertius.state.chapter = Tertius.config.start[1];
-      }
-      Tertius.config.bibles.forEach(function(b) {
-        env.load(b, function() {
-          Tertius.UI.rebuildBibleMenu();
-          if (Tertius.config.start && b == Tertius.config.bibles[Tertius.config.bibles.length-1]) Tertius.UI.showChapter();
-        });
+    Tertius.SettingsManager.load(function() {
+      Tertius.HistoryAndBookmarks.load(function() {
+        Tertius.UI.setup();
+        if (Tertius.config.start) {
+          Tertius.state.book = Tertius.config.start[0];
+          Tertius.state.chapter = Tertius.config.start[1];
+        }
+        Tertius.config.bibles.forEach(function(b) {
+          env.load(b, function() {
+            Tertius.UI.rebuildBibleMenu();
+            if (Tertius.config.start && b == Tertius.config.bibles[Tertius.config.bibles.length-1]) Tertius.UI.showChapter();
+          });
+        });      
       });
     });
   },

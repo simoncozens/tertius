@@ -25,6 +25,8 @@ body.notIE ruby {
      using border collapse mechanism) */
 }
 
+body.ruby-hidden ruby { border-bottom: 0; vertical-align: bottom;}
+
 /* Fixed problem with IE8 and the rtc tag */
 body.ie8 ruby rtc {
 	display: ruby-text;
@@ -35,12 +37,14 @@ body.ie8 ruby rtc {
 body.notIE  ruby > rt, body.notIE rtc {
     display: table-header-group;
 }
+body.ruby-hidden ruby > rt { display: none;}
 
 /* used to move first ruby
  container above the base */
 body.notIE ruby > rb, body.notIE rbc, ruby > rt + rt, body.notIE rtc + rtc {
     display: table-row;
 }
+body.ruby-hidden ruby > rb { display: inline;}
 
 /* base and second ruby
  are formatted as table-rows */
