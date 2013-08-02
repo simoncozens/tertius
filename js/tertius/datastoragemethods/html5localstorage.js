@@ -11,6 +11,6 @@ Tertius.DataStorageMethods.HTML5LocalStorage = {
   },
   saveJSON: function (filename, object) {
     console.log("Saving "+filename);
-    localStorage.setItem(filename, JSON.stringify(object[filename]));
+    localStorage.setItem(filename, JSON.stringify(object));
   }
 };

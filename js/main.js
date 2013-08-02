@@ -10,18 +10,26 @@ Tertius = {
     Tertius.SettingsManager.load(function() {
       Tertius.HistoryAndBookmarks.load(function() {
         Tertius.UI.setup();
-        if (Tertius.config.start) {
-          Tertius.state.book = Tertius.config.start[0];
-          Tertius.state.chapter = Tertius.config.start[1];
-        }
         Tertius.config.bibles.forEach(function(b) {
           env.load(b, function() {
             Tertius.UI.rebuildBibleMenu();
-            if (Tertius.config.start && b == Tertius.config.bibles[Tertius.config.bibles.length-1]) Tertius.UI.showChapter();
+            if (Tertius.config.start && b == Tertius.config.bibles[Tertius.config.bibles.length-1]) {
+              Tertius.startUp();
+            } 
           });
         });      
       });
     });
+  },
+  startUp: function() {
+    if (Tertius.HistoryAndBookmarks.history[0]) {
+      Tertius.HistoryAndBookmarks.select("history", 0);
+    }
+    else if (Tertius.config.start) {
+      Tertius.state.book = Tertius.config.start[0];
+      Tertius.state.chapter = Tertius.config.start[1];
+      Tertius.showChapter(Tertius.state.book, Tertius.state.chapter);
+    }
   },
   search: function(ref) {
     Tertius.nonce = 0;
