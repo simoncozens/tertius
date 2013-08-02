@@ -7,6 +7,6 @@ Tertius.SettingsManager = {
     Tertius.DataStorage.loadJSON("settings", Tertius.SettingsManager, cb);
   },
   save: function() {
-    Tertius.DataStorage.saveJSON("settings", Tertius.SettingsManager);
+    Tertius.DataStorage.saveJSON("settings", Tertius.SettingsManager.settings);
   },
 };
