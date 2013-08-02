@@ -67,6 +67,9 @@ Tertius = {
       type: "bible", reference: ref, bibles: Tertius.UI.currentBibles().map(function (x) {return x.abbrev; })
     };    
     Tertius.HistoryAndBookmarks.record("history");
+    // XXX Hack
+    Tertius.state.book = ref.references[0].bookId; 
+    Tertius.state.chapter = ref.references[0].chapter;
   },
   showChapter: function (book, chapter, cb) {
     Tertius.nonce = 0;
