@@ -1,6 +1,6 @@
 Tertius.config = {
-	loader: "xml",
-	bibles: [ "LEB", "kjv", "sbl" ],
+	loader: "sql",
+	bibles: [ "LEB", "kjv", "sbl", "wlc" ],
 	UI: Tertius.UIs.JQM,
 	start: ["John", 3]
 };

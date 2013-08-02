@@ -1,11 +1,9 @@
-* Verse wheel/grid/etc.
-* Ensure at least one text is selected
-* Settings
+* Settings (Font size, Ruby on/off, lexicon)
+* Strongs Hebrew lexicon
+* Free Greek lexicon?
 
 Requests
 --------
 
-* History
-* Bookmarks
 * Liturgy
 * Bible reading plan?
