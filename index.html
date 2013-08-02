@@ -17,6 +17,14 @@
     </head>
     <body class="modern notIE">
 <div data-role="page" id="main">
+
+<div data-role="popup" id="morphPopup" data-theme="d" data-transition="slideup">
+    <ul data-role="listview" data-inset="true" data-theme="d">
+        <li data-role="divider" data-theme="e"><span id="morphWord"></span></li>
+    </ul>
+    <p id="morphText"></p>
+</div>
+
 <div data-role="popup" id="historyMenu" data-theme="d" data-transition="slideup">
     <ul data-role="listview" data-inset="true" data-theme="d">
         <li data-role="divider" data-theme="e">History</li>
@@ -102,6 +110,7 @@
         <script src="js/main.js"></script>
         <script src="js/tertius/history-bookmarks.js"></script>
         <script src="js/tertius/settings.js"></script>
+        <script src="js/tertius/morphology.js"></script>
         <script src="js/tertius/biblesources/xml.js"></script>
         <script src="js/tertius/biblesources/sql.js"></script>
         <script src="js/tertius/datastoragemethods/cordovafilesystem.js"></script>

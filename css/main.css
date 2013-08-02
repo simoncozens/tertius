@@ -4,7 +4,7 @@
   background-color: #dedede;
 
 }
-
+#morphText * th { text-align: left; padding: 6px;}
 .bible-fullname { font-size: 75%;}
 .j { color: #ff0000;}
 @media screen and (device-aspect-ratio: 2/3) {
@@ -24,3 +24,5 @@ transChange { font-style: italic; }
 }
 input.ui-input-text.ui-slider-input { display: none;}
 .ui-slider-track {margin: 0;}
+
+w[pos] { border-bottom: 1px dotted #ccc; line-height: 1.5em}

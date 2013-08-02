@@ -172,6 +172,12 @@ Tertius.UIs.JQM = {
       return $("<span><a data-role=\"popup-trigger\" data-popup-id=\"popup-"+footnoteRef+"\"> <sup>"+footnoteRef+"</sup> </a></span>").append(popup);
     });
     $("div.footnote").popup().trigger("create");
+
+    $("w[pos!=X-]").click(function() {
+      $("#morphWord").html($(this).clone());
+      $("#morphText").html(Tertius.Morphology.Greek.explain(this));
+      $("#morphPopup").popup("open");
+    });
   },
   showHistoryBookmarks: function (actingAs, list) {
     console.log("Hitme "+actingAs);
