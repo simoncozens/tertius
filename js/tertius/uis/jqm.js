@@ -144,7 +144,7 @@ Tertius.UIs.JQM = {
   showBibleResultHandler: function(b, res) {
     res.forEach(function (r) {
       var key = b.abbrev+"_"+r.book + "_" + r.chapter + "_" + r.verse;
-      $("#"+key).html(Tertius.processContent(r.content));
+      $("#"+key).html(r.content);
     });
     Tertius.UI.postprocessResults();
   },
@@ -164,6 +164,13 @@ Tertius.UIs.JQM = {
 
   },
   postprocessResults: function() {
+    var footnoteRef = 0;
+    $("note").replaceWith(function() {
+      var note = $("<p></p>").append(this.innerHTML);
+      footnoteRef++;
+      var popup = $('<div class=\"footnote\" data-role=\"popup\" data-overlay-theme="a" id=\"popup-'+footnoteRef+'\" data-tolerance="15">').append(note);
+      return $("<span><a data-role=\"popup-trigger\" data-popup-id=\"popup-"+footnoteRef+"\"> <sup>"+footnoteRef+"</sup> </a></span>").append(popup);
+    });
     $("div.footnote").popup().trigger("create");
   },
   showHistoryBookmarks: function (actingAs, list) {

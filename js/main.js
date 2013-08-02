@@ -65,14 +65,4 @@ Tertius = {
     this.search(Tertius.state.book+ " "+Tertius.state.chapter);
     if (cb) cb();
   },
-  processContent: function(c) {
-    c = $(c);
-    c.find("note").replaceWith(function() {
-      var note = $("<p></p>").append(this.innerHTML);
-      Tertius.nonce++;
-      var popup = $('<div class=\"footnote\" data-role=\"popup\" data-overlay-theme="a" id=\"popup-'+Tertius.nonce+'\" data-tolerance="15">').append(note);
-      return $("<span><a data-role=\"popup-trigger\" data-popup-id=\"popup-"+Tertius.nonce+"\"> <sup>"+Tertius.nonce+"</sup> </a></span>").append(popup);
-    });
-    return c;
-  }
 };
