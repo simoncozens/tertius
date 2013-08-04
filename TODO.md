@@ -1,4 +1,3 @@
-* SQLite android
 * Settings (Font size, Ruby on/off, lexicon)
 * Strongs Hebrew lexicon
 * Free Greek lexicon?
