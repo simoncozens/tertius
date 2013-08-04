@@ -35,6 +35,11 @@ Tertius.Morphology.Greek = {
 			if (this.case[tags[4]]) { t.append("<tr><th>Case</th><td>"+ this.case[tags[4]]+"</td></tr>"); }
 		}
 		if (w.attr("lemma")) {t.append("<tr><th>Lemma</th><td>"+w.attr("lemma")+"</td></tr>")}
+		if (Tertius.Tools["strongs-greek"] && w.attr("strongs")) {
+			Tertius.Tools["strongs-greek"].lookup("strongs", w.attr("strongs"), function (a,entries) {
+				$("#morphDict").html(entries[0].content);
+			});
+		}
 		return t;
 	}
 };
