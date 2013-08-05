@@ -1,3 +1,15 @@
+@font-face {
+font-family: 'GentiumPlus';
+src: url('GentiumPlus-R.woff') format('woff'), url('GentiumPlus-R.ttf') format('truetype');
+font-weight: normal;
+font-style: normal;
+}
+@font-face {
+font-family: 'GentiumPlus';
+src: url('GentiumPlus-I.woff') format('woff'), url('GentiumPlus-I.ttf') format('truetype');
+font-weight: normal;
+font-style: italic;
+}
 #bible { background: #fdfdfd; text-align: justify; }
 #bible * td { padding: 10px;}
 #bible * tr:nth-child(odd) {
@@ -26,3 +38,4 @@ input.ui-input-text.ui-slider-input { display: none;}
 .ui-slider-track {margin: 0;}
 
 w[pos] { border-bottom: 1px dotted #ccc; line-height: 1.5em}
+w { font-family: "GentiumPlus" }
