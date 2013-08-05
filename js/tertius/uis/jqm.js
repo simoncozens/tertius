@@ -151,7 +151,7 @@ Tertius.UIs.JQM = {
   showSearchResultHandler: function(b, res) {
     res.forEach(function (r) {
       var key = r.book + " " + r.chapter + ":" + r.verse;
-      $("#bible").append("<tr><th>"+b.abbrev+"</th><th>" + key+ "</th> <td> "+Tertius.processContent(r.content).html()+"</td></tr>");
+      $("#bible").append("<tr><th>"+b.abbrev+"</th><th>" + key+ "</th> <td> "+r.content+"</td></tr>");
     });
     Tertius.UI.postprocessResults();
   },
