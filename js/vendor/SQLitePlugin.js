@@ -74,7 +74,6 @@ if (!window.Cordova) window.Cordova = window.cordova;
   SQLitePlugin.prototype.transaction = function(fn, error, success) {
     var t = new SQLitePluginTransaction(this, fn, error, success);
     this.txQueue.push(t);
-    console.log("TX queue is "+this.txQueue.length);
     if (this.txQueue.length == 1){
       t.start();
     }
