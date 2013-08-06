@@ -25,6 +25,7 @@ Tertius.UIs.JQM = {
   },
   setCurrentBibles: function(babbrevs) {
     $("#versions").val(babbrevs);
+    $("#versions").selectmenu("refresh");
   },
   decorateHack: function() {
       // Decorate the menu items with the name.
