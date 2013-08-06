@@ -9,11 +9,33 @@
         <title>Tertius</title>
         <meta name="description" content="">
         <meta name="format-detection" content="telephone=no" />
-        <meta name="viewport" content="user-scalable=no, initial-scale=1, maximum-scale=1, minimum-scale=1, width=device-width, target-densitydpi=device-dpi" />
+        <meta name="viewport" content="user-scalable=no, initial-scale=1, maximum-scale=1, minimum-scale=1, width=device-width" />
+        <!--
         <link rel="stylesheet" href="css/ruby.css">
         <link rel="stylesheet" href="css/jquery.mobile-1.3.1.min.css">
         <link rel="stylesheet" href="css/main.css">        
-        <link rel="stylesheet" href="css/fontawesome.css">
+        <link rel="stylesheet" href="css/fa-expanded.css">
+        -->
+        <link rel="stylesheet" href="css/packed.css">
+        <script src="cordova-2.7.0.js"></script>
+        <script src="js/vendor/jquery-1.10.1.min.js"></script> 
+        <script src="js/vendor/SQLitePlugin.js"></script>
+        <script src="js/vendor/jquery.mobile-1.3.1.min.js"></script>
+        <script src="js/vendor/bible-ref-parser.js"></script>
+        <script src="js/plugins.js"></script>
+        <script src="js/main.js"></script>
+        <script src="js/tertius/history-bookmarks.js"></script>
+        <script src="js/tertius/settings.js"></script>
+        <script src="js/tertius/morphology.js"></script>
+        <script src="js/tertius/biblesources/xml.js"></script>
+        <script src="js/tertius/biblesources/sql.js"></script>
+        <script src="js/tertius/toolsources/sql.js"></script>
+
+        <script src="js/tertius/datastoragemethods/cordovafilesystem.js"></script>
+        <script src="js/tertius/datastoragemethods/html5localstorage.js"></script>
+        <script src="js/tertius/uis/jqm.js"></script>
+        <script src="js/tertius/config.js"></script>
+        <script src="js/kickoff.js"></script>
     </head>
     <body class="modern notIE">
 <div data-role="page" id="main">
@@ -100,33 +122,15 @@
 
     </div>
 </div>
-
-        <script src="cordova-2.7.0.js"></script>
-        <script src="js/vendor/SQLitePlugin.js"></script>
-        <script src="js/index.js"></script>
-        <script src="//ajax.googleapis.com/ajax/libs/jquery/1.10.1/jquery.min.js"></script>
-        <script>window.jQuery || document.write('<script src="js/vendor/jquery-1.10.1.min.js"><\/script>')</script>
-        <script src="js/vendor/jquery.mobile-1.3.1.min.js"></script>
-        <script src="js/vendor/bible-ref-parser.js"></script>
-        <script src="js/plugins.js"></script>
-        <script src="js/main.js"></script>
-        <script src="js/tertius/history-bookmarks.js"></script>
-        <script src="js/tertius/settings.js"></script>
-        <script src="js/tertius/morphology.js"></script>
-        <script src="js/tertius/biblesources/xml.js"></script>
-        <script src="js/tertius/biblesources/sql.js"></script>
-        <script src="js/tertius/toolsources/sql.js"></script>
-
-        <script src="js/tertius/datastoragemethods/cordovafilesystem.js"></script>
-        <script src="js/tertius/datastoragemethods/html5localstorage.js"></script>
-        <script src="js/tertius/uis/jqm.js"></script>
-        <script src="js/tertius/config.js"></script>
-        <script>
-$( function () { 
-//    $(document).bind('pageinit', "#main", function() {
-        Tertius.setup() 
-//    });
-});
-        </script>
+    <script>
+    $(document).bind("mobileinit", function() { 
+        console.log("mobileinit OK");
+        Tertius.UIs.JQM.mobileInit();
+    });
+    $(document).ready(function(){
+        console.log("start OK");
+        Tertius.UIs.JQM.start();
+    });
+    </script>
     </body>
 </html>

@@ -2,6 +2,14 @@ if (!Tertius) Tertius = {};
 if (!Tertius.UIs) Tertius.UIs = {};
 Tertius.UIs.JQM = {
   mode: "search",
+  mobileInit: function () {
+    $.mobile.autoInitialize = false;
+  },
+  start: function()  { 
+    $.mobile.initializePage();
+    Tertius.setup();
+    $.mobile.hidePageLoadingMsg();
+  },
   rebuildBibleMenu: function() {
     $("#versions").empty();
     $("#versions").append('<option data-placeholder="true">Select a Bible version</option>');
