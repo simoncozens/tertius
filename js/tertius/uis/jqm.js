@@ -117,20 +117,20 @@ Tertius.UIs.JQM = {
     $("#verseList").listview("refresh");
   },
   gotoVerseMode: function () {
-    var that = this;
     $("#prevC,#nextC,#verserefbarCont,#searchButton").show();
     $("#searchbarCont").hide();
-    $("#verseSelect").click(function() {
-      $("#verseList").empty();
-      for (var bk in BibleRefParser.bookinfo) {
-        var li = $("<li><a>"+bk+"</a></li>");
-        li.attr("data-bible-book-osis", bk);
-        $("#verseList").append(li);
-      }
-      $('#verseList').one('click', 'li', that.chapterMenuBuilder);
-      $("#verseList").listview("refresh");
-    });
+    $("#verseSelect").click(Tertius.UI.verseSelectClick);
     Tertius.state.mode = "verse";
+  },
+  verseSelectClick: function() {
+    $("#verseList").empty();
+    for (var bk in BibleRefParser.bookinfo) {
+      var li = $("<li><a>"+bk+"</a></li>");
+      li.attr("data-bible-book-osis", bk);
+      $("#verseList").append(li);
+    }
+    $('#verseList').one('click', 'li', Tertius.UI.chapterMenuBuilder);
+    $("#verseList").listview("refresh");
   },
   prepareVerseResults: function(i) {
     Tertius.UI.preprocessResults();
@@ -151,10 +151,11 @@ Tertius.UIs.JQM = {
     }
   },
   showBibleResultHandler: function(b, res) {
-    res.forEach(function (r) {
+    for (var i =0; i < res.length; i++) {
+      var r = res[i];
       var key = b.abbrev+"_"+r.book + "_" + r.chapter + "_" + r.verse;
       $("#"+key).html(r.content);
-    });
+    }
     Tertius.UI.postprocessResults();
   },
   showSearchResultHandler: function(b, res) {

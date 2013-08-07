@@ -48,9 +48,10 @@ Tertius = {
   },
   wordSearch: function (word) {
     Tertius.UI.prepareSearchResults(word);
-    Tertius.UI.currentBibles().forEach(function (b) {
-      b.search(word, Tertius.UI.showSearchResultHandler);
-    });
+    var bibles = Tertius.UI.currentBibles();
+    for (var bIndex = 0; bIndex < bibles.length; bIndex++) {
+      bibles[bIndex].search(word, Tertius.UI.showSearchResultHandler);
+    }
     Tertius.state.currentSearch = {
       type: "search", terms: word, bibles: Tertius.UI.currentBibles().map(function (x) {return x.abbrev; })
     };
@@ -60,11 +61,13 @@ Tertius = {
     // Prepare rows to receive results
     var i = ref.iterator();
     Tertius.UI.prepareVerseResults(i);
-    ref.references.forEach( function(r) {
-      Tertius.UI.currentBibles().forEach(function (b) {
-        b.lookup(r.bookId, r.chapter, r.startVerse, r.endVerse, Tertius.UI.showBibleResultHandler);
-      });
-    });
+    var bibles = Tertius.UI.currentBibles();
+    for (var rIndex = 0; rIndex < ref.references.length; rIndex++) {
+      var r = ref.references[rIndex];
+      for (var bIndex = 0; bIndex < bibles.length; bIndex++) {
+        bibles[bIndex].lookup(r.bookId, r.chapter, r.startVerse, r.endVerse, Tertius.UI.showBibleResultHandler);
+      }
+    }
     Tertius.state.currentSearch = {
       type: "bible", reference: ref, bibles: Tertius.UI.currentBibles().map(function (x) {return x.abbrev; })
     };    
