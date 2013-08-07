@@ -142,11 +142,11 @@ Tertius.UIs.JQM = {
     var v;
     while ((v = i.next())) {
       var key = v.bookId + "_" + v.chapter + "_" + v.verse;
-      var row = $('<tr id="'+key+'"/>');
-      row.append('<td>'+v.chapter+":"+v.verse+'</td>');
+      var row = '<tr id="'+key+'"><td>'+v.chapter+":"+v.verse+'</td>';
       Tertius.UI.currentBibles().forEach(function (b) {
-        row.append('<td id="'+b.abbrev+"_"+key+'"></td>');
+        row += '<td id="'+b.abbrev+"_"+key+'"></td>';
       });
+      row += "</tr>";
       $("#bible").append(row);
     }
   },
@@ -158,10 +158,11 @@ Tertius.UIs.JQM = {
     Tertius.UI.postprocessResults();
   },
   showSearchResultHandler: function(b, res) {
-    res.forEach(function (r) {
+    for (var i =0; i < res.length; i++) {
+      var r = res[i];
       var key = r.book + " " + r.chapter + ":" + r.verse;
       $("#bible").append("<tr><th>"+b.abbrev+"</th><th>" + key+ "</th> <td> "+r.content+"</td></tr>");
-    });
+    }
     Tertius.UI.postprocessResults();
   },
   prepareSearchResults: function(t){
