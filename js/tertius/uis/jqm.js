@@ -17,7 +17,7 @@ Tertius.UIs.JQM = {
       $("#versions").append("<option name=\""+ver+"\">"+Tertius.Bibles[ver].abbrev+"</option>");
     }
     $("#versions").val([  $("#versions").children().first().next().val() ]);
-    $("#versions").selectmenu("refresh");
+    if ($("#versions").data("mobileSelectmenu")) {$("#versions").selectmenu("refresh", true); } else {$("#versions").trigger("create"); }
     this.decorateHack();
   },
   currentBibles: function() {
@@ -25,7 +25,8 @@ Tertius.UIs.JQM = {
   },
   setCurrentBibles: function(babbrevs) {
     $("#versions").val(babbrevs);
-    $("#versions").selectmenu("refresh");
+    if ($("#versions").data("mobileSelectmenu")) {$("#versions").selectmenu("refresh", true); } else {$("#versions").trigger("create"); }
+    
   },
   decorateHack: function() {
       // Decorate the menu items with the name.
