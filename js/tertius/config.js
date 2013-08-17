@@ -1,6 +1,7 @@
 Tertius.config = {
-	loader: "xml",
+	loader: "splitXml",
 	bibles: [ "LEB", "kjv", "sbl", "wlc" ],
+	tools: ["strongs-greek"],
 	UI: Tertius.UIs.JQM,
     DataStorage: Tertius.DataStorageMethods.HTML5LocalStorage,
 	start: ["John", 3]

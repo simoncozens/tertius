@@ -1,6 +1,7 @@
 Tertius.config = {
-	loader: "sql",
-	bibles: [ "LEB", "kjv", "sbl", "wlc" ],
-	UI: Tertius.UIs.JQM,
-	start: ["John", 3]
+    loader: "sql",
+    bibles: [ "LEB", "kjv", "sbl", "wlc" ],
+    UI: Tertius.UIs.JQM,
+    DataStorage: Tertius.DataStorageMethods.CordovaFilesystem,
+    start: ["John", 3]
 };

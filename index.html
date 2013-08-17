@@ -9,14 +9,51 @@
         <title>Tertius</title>
         <meta name="description" content="">
         <meta name="format-detection" content="telephone=no" />
-        <meta name="viewport" content="user-scalable=no, initial-scale=1, maximum-scale=1, minimum-scale=1, width=device-width, target-densitydpi=device-dpi" />
-        <link rel="stylesheet" href="css/main.css">        
+        <meta name="viewport" content="user-scalable=no, initial-scale=1, maximum-scale=1, minimum-scale=1, width=device-width" />
+        <!--
         <link rel="stylesheet" href="css/ruby.css">
         <link rel="stylesheet" href="css/jquery.mobile-1.3.1.min.css">
-        <link rel="stylesheet" href="css/fontawesome.css">
+        <link rel="stylesheet" href="css/main.css">        
+        <link rel="stylesheet" href="css/fa-expanded.css">
+        -->
+        <link rel="stylesheet" href="css/packed.css">
+        <script src="js/vendor/jquery-1.10.1.min.js"></script>
+        <script src="js/vendor/SQLitePlugin.js"></script>
+        <script src="js/vendor/jquery.mobile-1.3.1.min.js"></script>
+        <script src="js/vendor/bible-ref-parser.js"></script>
+
+        <script src="js/plugins.js"></script>
+        <script src="js/main.js"></script>
+        <script src="js/tertius/history-bookmarks.js"></script>
+        <script src="js/tertius/settings.js"></script>
+        <script src="js/tertius/morphology.js"></script>
+        <script src="js/tertius/biblesources/xml.js"></script>
+        <script src="js/tertius/biblesources/sql.js"></script>
+        <script src="js/tertius/biblesources/split-xml.js"></script>
+        <script src="js/tertius/toolsources/sql.js"></script>
+        <script src="js/tertius/toolsources/xml.js"></script>
+
+        <script src="js/tertius/datastoragemethods/cordovafilesystem.js"></script>
+        <script src="js/tertius/datastoragemethods/html5localstorage.js"></script>
+        <script src="js/tertius/uis/jqm.js"></script> 
+        <script src="js/tertius/config.js"></script>
+    <script> 
+        window.addEventListener('load', Tertius.setup, false);
+    </script>
+
     </head>
     <body class="modern notIE">
 <div data-role="page" id="main">
+
+<div data-role="popup" id="morphPopup" data-theme="d" data-transition="slideup">
+    <ul data-role="listview" data-inset="true" data-theme="d">
+        <li data-role="divider" data-theme="e"><span id="morphWord"></span></li>
+    </ul>
+    <p id="morphText"></p>
+    <p id="morphDict"></p>
+
+</div>
+
 <div data-role="popup" id="historyMenu" data-theme="d" data-transition="slideup">
     <ul data-role="listview" data-inset="true" data-theme="d">
         <li data-role="divider" data-theme="e">History</li>
@@ -59,7 +96,7 @@
     </div>
     <div data-role="footer" data-position="fixed">
         <p>
-                <a href="#" data-role="button" data-inline="true" id="settings" data-icon="gear" data-iconpos="notext">Settings</a>
+                <a href="#settingsDlg" data-rel="dialog" data-role="button" data-inline="true" id="settings" data-icon="gear" data-iconpos="notext">Settings</a>
                 <a href="#" data-role="button" data-inline="true" id="history" data-icon="time" data-iconpos="notext">History</a>
                 <a href="#" data-role="button" data-inline="true" id="bookmarks" data-icon="bookmark" data-iconpos="notext">Bookmark</a>
             </p>
@@ -71,29 +108,24 @@
 </ul>
 </div>
 
+<div data-role="dialog" id="settingsDlg" data-overlay-theme="f">
+    <div data-role="header">
+        <h1>Settings</h1>
+    </div>
+    <div data-role="content">
+        <table width="100%">
+        <tr><td><label for="setting-fontSize">Text size:</label></td>
+            <td><input type="range" name="setting-fontSize" id="setting-fontSize" value="100" min="50" max="250" /></td></tr>
+        <tr><td><label for="ruby">Japanese Ruby:</label></td>
+            <td><select name="setting-ruby" id="setting-ruby" data-role="slider">
+            <option value="0">Off</option>
+            <option value="1" selected>On</option>
+            </select></td></tr>
+        </table>
+        <a href="#" data-role="button" data-inline="true" id="settings-cancel">Cancel</a>
+        <a href="#" style="float:right" data-role="button" data-inline="true" data-theme="b" id="settings-save">Save</a>
 
-        <script src="cordova-2.7.0.js"></script>
-        <script src="js/vendor/SQLitePlugin.js"></script>
-        <script src="js/index.js"></script>
-        <script src="//ajax.googleapis.com/ajax/libs/jquery/1.10.1/jquery.min.js"></script>
-        <script>window.jQuery || document.write('<script src="js/vendor/jquery-1.10.1.min.js"><\/script>')</script>
-        <script src="js/vendor/jquery.mobile-1.3.1.min.js"></script>
-        <script src="js/vendor/bible-ref-parser.js"></script>
-        <script src="js/plugins.js"></script>
-        <script src="js/main.js"></script>
-        <script src="js/tertius/history-bookmarks.js"></script>
-        <script src="js/tertius/biblesources/xml.js"></script>
-        <script src="js/tertius/biblesources/sql.js"></script>
-        <script src="js/tertius/datastoragemethods/cordovafilesystem.js"></script>
-        <script src="js/tertius/datastoragemethods/html5localstorage.js"></script>
-        <script src="js/tertius/uis/jqm.js"></script>
-        <script src="js/tertius/config.js"></script>
-        <script>
-$( function () { 
-    //$("#main").bind('pageinit', function() {
-        Tertius.setup() 
-    //});
-});
-        </script>
+    </div>
+</div>
     </body>
 </html>

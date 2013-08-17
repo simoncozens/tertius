@@ -3,21 +3,22 @@ if (!Tertius.DataStorageMethods) Tertius.DataStorageMethods = {};
 Tertius.DataStorageMethods.CordovaFilesystem = {
 	loadJSON: function (filename, intoWhere, andThen) {
     /* To understand this function, start at the last line and read upwards. :( */
-
-    var fail = andThen || function(){}; /* The show must go on */
+    var failed = 0;
+    var fail = function() { failed++; };
 
     var _gotFile = function(file) {
       var reader = new FileReader();
       reader.onloadend = function(evt) {
         try {
         var res = JSON.parse(evt.target.result);
-        } catch(e) {}
+        } catch(e) { fail(); }
         if (res) intoWhere[filename] = res;
-        if (andThen) andThen();
+        if (andThen && 0 == failed) andThen();
       };
-      reader.onerror = function(e) { console.log(e); };
+      reader.onerror = fail;
       reader.readAsText(file);
       if (file.size == 0) fail();
+      if (failed > 0 && andThen) { andThen()} // The show must go on.
     };
 
     var _gotFileEntry = function (e) { e.file(_gotFile, fail); };

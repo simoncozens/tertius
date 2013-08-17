@@ -4,7 +4,7 @@
   background-color: #dedede;
 
 }
-
+#morphText * th { text-align: left; padding: 6px;}
 .bible-fullname { font-size: 75%;}
 .j { color: #ff0000;}
 @media screen and (device-aspect-ratio: 2/3) {
@@ -12,3 +12,17 @@
 }
 sup { font-size: 80%;}
 transChange { font-style: italic; }
+ .ui-dialog-background {
+ 	    -webkit-filter: blur(5px);	
+    filter: blur(5px);
+    opacity: 0.4;
+ 	display: block !important; }
+
+.in, .out {
+    -webkit-animation-timing-function: ease-in-out;
+    -webkit-animation-duration: 50ms !important;
+}
+input.ui-input-text.ui-slider-input { display: none;}
+.ui-slider-track {margin: 0;}
+
+w[pos] { border-bottom: 1px dotted #ccc; line-height: 1.5em}

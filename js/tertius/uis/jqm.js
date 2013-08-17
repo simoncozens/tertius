@@ -2,6 +2,14 @@ if (!Tertius) Tertius = {};
 if (!Tertius.UIs) Tertius.UIs = {};
 Tertius.UIs.JQM = {
   mode: "search",
+  mobileInit: function () {
+    $.mobile.autoInitialize = false;
+  },
+  start: function()  { 
+    $.mobile.initializePage();
+    Tertius.setup();
+    $.mobile.hidePageLoadingMsg();
+  },
   rebuildBibleMenu: function() {
     $("#versions").empty();
     $("#versions").append('<option data-placeholder="true">Select a Bible version</option>');
@@ -9,15 +17,16 @@ Tertius.UIs.JQM = {
       $("#versions").append("<option name=\""+ver+"\">"+Tertius.Bibles[ver].abbrev+"</option>");
     }
     $("#versions").val([  $("#versions").children().first().next().val() ]);
-    $("#versions").selectmenu("refresh");
+    if ($("#versions").data("mobileSelectmenu")) {$("#versions").selectmenu("refresh", true); } else {$("#versions").trigger("create"); }
     this.decorateHack();
-
   },
   currentBibles: function() {
     return $("#versions").val().map(function (x) {return Tertius.Bibles[x]});
   },
   setCurrentBibles: function(babbrevs) {
     $("#versions").val(babbrevs);
+    if ($("#versions").data("mobileSelectmenu")) {$("#versions").selectmenu("refresh", true); } else {$("#versions").trigger("create"); }
+    
   },
   decorateHack: function() {
       // Decorate the menu items with the name.
@@ -55,10 +64,14 @@ Tertius.UIs.JQM = {
     $("#bible").on("swiperight", function() {if (Tertius.state.mode == "verse") {that.prevChapter(); } });
     $("#history").click(function() { Tertius.HistoryAndBookmarks.show("history"); });
     $("#bookmarks").click(function() { Tertius.HistoryAndBookmarks.show("bookmarks"); });
-    $("#save-bookmark").click(function() { 
+    $("#save-bookmark").click(function() {
       Tertius.HistoryAndBookmarks.select("bookmarks", -1);
       $("#bookmarksMenu").popup("close");
     });
+    $("#settings-save").click(this.saveSettings);
+    $("#settings-cancel").click(function() { $("#settingsDlg").dialog("close"); });
+    $("#settingsDlg").on('pageinit', this.copySettingsToUI);
+    this.applySettings();
   },
   search: function() {
     Tertius.search($("#searchbar").val());
@@ -105,20 +118,20 @@ Tertius.UIs.JQM = {
     $("#verseList").listview("refresh");
   },
   gotoVerseMode: function () {
-    var that = this;
     $("#prevC,#nextC,#verserefbarCont,#searchButton").show();
     $("#searchbarCont").hide();
-    $("#verseSelect").click(function() {
-      $("#verseList").empty();
-      for (var bk in BibleRefParser.bookinfo) {
-        var li = $("<li><a>"+bk+"</a></li>");
-        li.attr("data-bible-book-osis", bk);
-        $("#verseList").append(li);
-      }
-      $('#verseList').one('click', 'li', that.chapterMenuBuilder);
-      $("#verseList").listview("refresh");
-    });
+    $("#verseSelect").click(Tertius.UI.verseSelectClick);
     Tertius.state.mode = "verse";
+  },
+  verseSelectClick: function() {
+    $("#verseList").empty();
+    for (var bk in BibleRefParser.bookinfo) {
+      var li = $("<li><a>"+bk+"</a></li>");
+      li.attr("data-bible-book-osis", bk);
+      $("#verseList").append(li);
+    }
+    $('#verseList').one('click', 'li', Tertius.UI.chapterMenuBuilder);
+    $("#verseList").listview("refresh");
   },
   prepareVerseResults: function(i) {
     Tertius.UI.preprocessResults();
@@ -130,26 +143,28 @@ Tertius.UIs.JQM = {
     var v;
     while ((v = i.next())) {
       var key = v.bookId + "_" + v.chapter + "_" + v.verse;
-      var row = $('<tr id="'+key+'"/>');
-      row.append('<td>'+v.chapter+":"+v.verse+'</td>');
+      var row = '<tr id="'+key+'"><td>'+v.chapter+":"+v.verse+'</td>';
       Tertius.UI.currentBibles().forEach(function (b) {
-        row.append('<td id="'+b.abbrev+"_"+key+'"></td>');
+        row += '<td id="'+b.abbrev+"_"+key+'"></td>';
       });
+      row += "</tr>";
       $("#bible").append(row);
     }
   },
   showBibleResultHandler: function(b, res) {
-    res.forEach(function (r) {
+    for (var i =0; i < res.length; i++) {
+      var r = res[i];
       var key = b.abbrev+"_"+r.book + "_" + r.chapter + "_" + r.verse;
-      $("#"+key).html(Tertius.processContent(r.content));
-    });
+      $("#"+key).html(r.content);
+    }
     Tertius.UI.postprocessResults();
   },
   showSearchResultHandler: function(b, res) {
-    res.forEach(function (r) {
+    for (var i =0; i < res.length; i++) {
+      var r = res[i];
       var key = r.book + " " + r.chapter + ":" + r.verse;
-      $("#bible").append("<tr><th>"+b.abbrev+"</th><th>" + key+ "</th> <td> "+Tertius.processContent(r.content).html()+"</td></tr>");
-    });
+      $("#bible").append("<tr><th>"+b.abbrev+"</th><th>" + key+ "</th> <td> "+r.content+"</td></tr>");
+    }
     Tertius.UI.postprocessResults();
   },
   prepareSearchResults: function(t){
@@ -161,7 +176,20 @@ Tertius.UIs.JQM = {
 
   },
   postprocessResults: function() {
+    var footnoteRef = 0;
+    $("note").replaceWith(function() {
+      var note = $("<p></p>").append(this.innerHTML);
+      footnoteRef++;
+      var popup = $('<div class=\"footnote\" data-role=\"popup\" data-overlay-theme="a" id=\"popup-'+footnoteRef+'\" data-tolerance="15">').append(note);
+      return $("<span><a data-role=\"popup-trigger\" data-popup-id=\"popup-"+footnoteRef+"\"> <sup>"+footnoteRef+"</sup> </a></span>").append(popup);
+    });
     $("div.footnote").popup().trigger("create");
+
+    $("w[pos!=X-]").click(function() {
+      $("#morphWord").html($(this).clone());
+      $("#morphText").html(Tertius.Morphology.Greek.explain(this));
+      $("#morphPopup").popup("open");
+    });
   },
   showHistoryBookmarks: function (actingAs, list) {
     console.log("Hitme "+actingAs);
@@ -179,5 +207,36 @@ Tertius.UIs.JQM = {
     });
     listview.listview("refresh");
     setTimeout(function () { popup.popup("open") },1);
+  },
+  copySettingsToUI: function() {
+    for (var k in Tertius.SettingsManager.settings) { 
+      var v = Tertius.SettingsManager.settings[k];
+      $("#setting-"+k).val(v);
+      console.log("Setting "+k+" to "+v);
+    }
+    $("#settingsDlg * input[data-type=range],#settingsDlg * [data-role=slider]").slider("refresh");
+    $("#settingsDlg * select[data-native-menu=false]").selectmenu("refresh");
+  },
+  copySettingsFromUI: function() {
+    for (var k in Tertius.SettingsManager.settings) { 
+      Tertius.SettingsManager.settings[k] = $("#setting-"+k).val();
+    }
+  },
+  saveSettings: function() {
+    Tertius.UI.copySettingsFromUI();
+    Tertius.SettingsManager.save();
+    Tertius.UI.applySettings();
+  },
+  applySettings: function() {
+    try { $("#settingsDlg").dialog("close"); } catch(e) {console.log(e); }
+    $("#bible").css("font-size", Tertius.SettingsManager.settings.fontSize+"%");
+    if (Tertius.SettingsManager.settings.ruby == "0") { $("body").addClass("ruby-hidden") } else { $("body").removeClass("ruby-hidden") }
   }
 };
+
+$('div[data-role=dialog]').on('pagebeforeshow', function(e, ui) {
+ui.prevPage.addClass("ui-dialog-background ");
+});
+$('div[data-role=dialog]').on('pagehide', function(e, ui) {
+  $(".ui-dialog-background ").removeClass("ui-dialog-background ");
+});
