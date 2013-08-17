@@ -5,7 +5,7 @@ Tertius.DataStorageMethods.HTML5LocalStorage = {
     var newObj;
     try {
       newObj = JSON.parse(localStorage.getItem(filename));
-      if (typeof(newObj)=="object") intoWhere[filename] = newObj;
+      if (newObj && typeof(newObj)=="object") intoWhere[filename] = newObj;
     }catch(e){ console.log(e); }
       if (andThen) andThen();
   },
