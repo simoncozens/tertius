@@ -1,6 +1,6 @@
 #bible { background: #fdfdfd; text-align: justify; }
 #bible * td { padding: 10px;}
-#bible * tr:nth-child(odd) {
+#bible tbody:nth-child(odd) {
   background-color: #dedede;
 
 }

@@ -1,7 +1,8 @@
 Tertius.SettingsManager = {
   defaultSettings: {
     fontSize: "100",
-    ruby: "1"
+    ruby: "1",
+    presentation: "parallel"
   },
   load: function(cb) {
     Tertius.DataStorage.loadJSON("settings", Tertius.SettingsManager, function() {
