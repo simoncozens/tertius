@@ -134,19 +134,34 @@ Tertius.UIs.JQM = {
   },
   prepareVerseResults: function(i) {
     Tertius.UI.preprocessResults();
-    var head= $('<tr class="bibleheader"><td/></tr>');
-    Tertius.UI.currentBibles().forEach(function (b) {
-      head.append("<th>"+b.abbrev+"</th>");
-    });
+    var head= $('<tr class="bibleheader"></tr>');
+    if (Tertius.SettingsManager.settings.presentation == "parallel") {
+      head.append("<td/>");
+      Tertius.UI.currentBibles().forEach(function (b) {
+        head.append("<th>"+b.abbrev+"</th>");
+      });
+    }
     $("#bible").append(head);
     var v;
     while ((v = i.next())) {
       var key = v.bookId + "_" + v.chapter + "_" + v.verse;
-      var row = '<tr id="'+key+'"><td>'+v.chapter+":"+v.verse+'</td>';
+      var row;
+      row = "<tbody>";
+      if (Tertius.SettingsManager.settings.presentation == "parallel") {
+        row += '<tr id="'+key+'"><td>'+v.chapter+":"+v.verse+'</td>';
+      } else {
+        row += '<tr id="'+key+'"><td rowspan="'+Tertius.UI.currentBibles().length+'">'+v.chapter+":"+v.verse+'</td>';
+      }
       Tertius.UI.currentBibles().forEach(function (b) {
+        if (Tertius.SettingsManager.settings.presentation == "interlinear") {
+          row += '<th>'+b.abbrev+'</th>';
+        }
         row += '<td id="'+b.abbrev+"_"+key+'"></td>';
+        if (Tertius.SettingsManager.settings.presentation == "interlinear") {
+          row += "</tr><tr>"
+        }
       });
-      row += "</tr>";
+      row += "</tr></tbody>";
       $("#bible").append(row);
     }
   },
@@ -215,6 +230,7 @@ Tertius.UIs.JQM = {
     }
     $("#settingsDlg * input[data-type=range],#settingsDlg * [data-role=slider]").slider("refresh");
     $("#settingsDlg * select[data-native-menu=false]").selectmenu("refresh");
+    $("div.ui-slider").last().width("120px");
   },
   copySettingsFromUI: function() {
     for (var k in Tertius.SettingsManager.settings) { 
