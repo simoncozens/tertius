@@ -96,7 +96,7 @@ Tertius.UIs.JQM = {
     $.mobile.changePage("#main");
   },
   nextChapter: function() {
-    if (Tertius.state.chapter == BibleRefParser.bookinfo[Tertius.state.book].chapters.length-1) return;
+    if (Tertius.state.chapter == Tertius.bcv.translations.default.chapters[Tertius.state.book].length-1) return;
     Tertius.state.chapter++; // Check if it's off the end
     Tertius.UI.showChapter();
   },
@@ -108,7 +108,7 @@ Tertius.UIs.JQM = {
   chapterMenuBuilder: function () {
     var book = $(this).attr("data-bible-book-osis");
     $("#verseList").empty();
-    var chapters = BibleRefParser.bookinfo[book].chapters;
+    var chapters = Tertius.bcv.translations.default.chapters[book];
     for (var i=1; i < chapters.length; i++) {
         var li = $("<li><a>"+i+"</a></li>");
         li.attr("data-bible-book-osis", book);
@@ -126,7 +126,7 @@ Tertius.UIs.JQM = {
   },
   verseSelectClick: function() {
     $("#verseList").empty();
-    for (var bk in BibleRefParser.bookinfo) {
+    for (var bk in Tertius.bcv.translations.default.chapters) {
       var li = $("<li><a>"+bk+"</a></li>");
       li.attr("data-bible-book-osis", bk);
       $("#verseList").append(li);
@@ -146,13 +146,14 @@ Tertius.UIs.JQM = {
     $("#bible").append(head);
     var v;
     while ((v = i.next())) {
-      var key = v.bookId + "_" + v.chapter + "_" + v.verse;
+      var key = v.replace(/\./g,"_");
+      var mo = v.match(/(\w+)\.(\d+)\.(\d+)/);
       var row;
       row = "<tbody>";
       if (Tertius.SettingsManager.settings.presentation == "parallel") {
-        row += '<tr id="'+key+'"><td>'+v.chapter+":"+v.verse+'</td>';
+        row += '<tr id="'+key+'"><td>'+mo[2]+":"+mo[3]+'</td>';
       } else {
-        row += '<tr id="'+key+'"><td rowspan="'+Tertius.UI.currentBibles().length+'">'+v.chapter+":"+v.verse+'</td>';
+        row += '<tr id="'+key+'"><td rowspan="'+Tertius.UI.currentBibles().length+'">'+mo[2]+":"+mo[3]+'</td>';
       }
       Tertius.UI.currentBibles().forEach(function (b) {
         if (Tertius.SettingsManager.settings.presentation == "interlinear") {
