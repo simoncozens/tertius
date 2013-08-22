@@ -19,7 +19,7 @@ Tertius.HistoryAndBookmarks = {
     var list = [];
     this[actingAs].forEach( function(entry, id) {
       if (entry.type == "bible") {
-        list[id] = BibleRefParser.resultMethods.toString.bind(entry.reference)(); // Because JSON splats the prototype
+        list[id] = entry.reference;
       } else if (entry.type == "search") { // There are *currently* no other types but this may change...
         list[id] = '"' + entry.terms + '"';
       }
@@ -41,9 +41,7 @@ Tertius.HistoryAndBookmarks = {
     Tertius.UI.setCurrentBibles(entry.bibles);
     if (entry.type == "search") return Tertius.wordSearch(entry.terms);
     if (entry.type == "bible") {
-      // XXX Unsmash the reference
-      entry.reference = BibleRefParser(BibleRefParser.resultMethods.toString.bind(entry.reference)());
-      return Tertius.showBible(entry.reference);
+      return Tertius.search(entry.reference);
     }
   },
   record: function (actingAs) {

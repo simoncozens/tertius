@@ -4,6 +4,7 @@ Tertius = {
   Tools: {},
   state: {},
   nonce: 0,
+  bcv: (new bcv_parser()),
   setup: function() {
     Tertius.UI = Tertius.config.UI;
     Tertius.DataStorage = Tertius.config.DataStorage;
@@ -35,17 +36,14 @@ Tertius = {
     }
   },
   search: function(ref) {
+    console.log("Going to "+ref);
     Tertius.nonce = 0;
-    try {
-      var bibleRef = BibleRefParser(ref);
-      if (bibleRef) {
+    var bibleRef = Tertius.bcv.parse(ref);
+    if (bibleRef.osis()) {
         return this.showBible(bibleRef);
-      }
-    } catch (e) {
-      console.log(e); // We presume...
-      // Reference parsing failed, it's a word search
-      this.wordSearch(ref);
     }
+    // Reference parsing failed, it's a word search
+    this.wordSearch(ref);
   },
   wordSearch: function (word) {
     Tertius.UI.prepareSearchResults(word);
@@ -60,22 +58,26 @@ Tertius = {
   },
   showBible: function(ref) {
     // Prepare rows to receive results
-    var i = ref.iterator();
+    var i = ref.verse_iterator();
     Tertius.UI.prepareVerseResults(i);
     var bibles = Tertius.UI.currentBibles();
-    for (var rIndex = 0; rIndex < ref.references.length; rIndex++) {
-      var r = ref.references[rIndex];
+    var c = ref.contiguous_verse_range_iterator();
+    while (r = c.next()) {
+      var mo = r.match(/(\w+)\.(\d+)\.(\d+)(?:\-(\d+))?/);
+      var bk = mo[1]; var ch = mo[2]; var start = mo[3]; var end = mo[4] || mo[3];
       for (var bIndex = 0; bIndex < bibles.length; bIndex++) {
-        bibles[bIndex].lookup(r.bookId, r.chapter, r.startVerse, r.endVerse, Tertius.UI.showBibleResultHandler);
+        bibles[bIndex].lookup(bk, ch, start, end, Tertius.UI.showBibleResultHandler);
       }
     }
     Tertius.state.currentSearch = {
-      type: "bible", reference: ref, bibles: Tertius.UI.currentBibles().map(function (x) {return x.abbrev; })
+      type: "bible", reference: ref.osis(), bibles: Tertius.UI.currentBibles().map(function (x) {return x.abbrev; })
     };    
     Tertius.HistoryAndBookmarks.record("history");
     // XXX Hack
-    Tertius.state.book = ref.references[0].bookId; 
-    Tertius.state.chapter = ref.references[0].chapter;
+    var h = ref.verse_iterator();
+    h.next();
+    Tertius.state.book = h.bkPtr; 
+    Tertius.state.chapter = h.chPtr;
   },
   showChapter: function (book, chapter, cb) {
     Tertius.nonce = 0;
