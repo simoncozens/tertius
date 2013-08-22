@@ -9,6 +9,7 @@ Tertius = {
     Tertius.DataStorage = Tertius.config.DataStorage;
     var env = Tertius.BibleSources[Tertius.config.loader];
     Tertius.config.tools.forEach(function(t) {Tertius.ToolSources[Tertius.config.loader].load(t); });
+    Tertius.BibleReading.setup();
     Tertius.SettingsManager.load(function() {
       Tertius.HistoryAndBookmarks.load(function() {
         Tertius.UI.setup();

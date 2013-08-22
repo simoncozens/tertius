@@ -3,5 +3,6 @@ Tertius.config = {
     bibles: [ "LEB", "kjv", "sbl", "wlc" ],
     UI: Tertius.UIs.JQM,
     DataStorage: Tertius.DataStorageMethods.CordovaFilesystem,
+    bibleReadingPlans: ["bible-in-a-year"],
     start: ["John", 3]
 };
