@@ -67,6 +67,7 @@ Tertius.UIs.JQM = {
       Tertius.HistoryAndBookmarks.select("bookmarks", -1);
       $("#bookmarksMenu").popup("close");
     });
+    this.setupBibleReadingPlansList();
     $("#settings-save").click(this.saveSettings);
     $("#settings-cancel").click(function() { $("#settingsDlg").dialog("close"); });
     $("#settingsDlg").on('pageinit', this.copySettingsToUI);
@@ -221,6 +222,20 @@ Tertius.UIs.JQM = {
     });
     listview.listview("refresh");
     setTimeout(function () { popup.popup("open") },1);
+  },
+  setupBibleReadingPlansList: function() {
+    if (!Tertius.BibleReading.plans || Object.keys(Tertius.BibleReading.plans).length == 0) return;
+    $("#settings-table").append('<tr><td><label for="setting-bibleReadingPlan">Bible Reading Plan:</label></td><td><select id="setting-bibleReadingPlan" name="setting-bibleReadingPlan" data-inline="true" data-native-menu="false"/></td></tr>')
+    $("#setting-bibleReadingPlan").empty();
+    for (var plan in Tertius.BibleReading.plans) {
+      $("#setting-bibleReadingPlan").append("<option value=\""+plan+"\">"+Tertius.BibleReading.plans[plan].info+"</option>");
+    }
+    $("#setting-bibleReadingPlan").val([  $("#setting-bibleReadingPlan").children().first().val() ]);
+    if (!Tertius.SettingsManager.settings.bibleReadingPlan) Tertius.SettingsManager.settings.bibleReadingPlan = $("#setting-bibleReadingPlan").val();
+    if ($("#setting-bibleReadingPlan").data("mobileSelectmenu")) {$("#setting-bibleReadingPlan").selectmenu("refresh", true); } else {$("#setting-bibleReadingPlan").trigger("create"); }
+
+    $("#footerbar").append('<a href="#" data-role="button" data-inline="true" id="dailyreading" data-icon="calendar" data-iconpos="notext">Daily Reading</a>');
+    $("#dailyreading").button().click(Tertius.BibleReading.todaysReading);
   },
   copySettingsToUI: function() {
     for (var k in Tertius.SettingsManager.settings) { 

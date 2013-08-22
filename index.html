@@ -28,6 +28,7 @@
         <script src="js/tertius/history-bookmarks.js"></script>
         <script src="js/tertius/settings.js"></script>
         <script src="js/tertius/morphology.js"></script>
+        <script src="js/tertius/bible-reading.js"></script>
         <script src="js/tertius/biblesources/xml.js"></script>
         <script src="js/tertius/biblesources/sql.js"></script>
         <script src="js/tertius/toolsources/sql.js"></script>
@@ -94,7 +95,7 @@
             </table>
     </div>
     <div data-role="footer" data-position="fixed">
-        <p>
+        <p id="footerbar">
                 <a href="#settingsDlg" data-rel="dialog" data-role="button" data-inline="true" id="settings" data-icon="gear" data-iconpos="notext">Settings</a>
                 <a href="#" data-role="button" data-inline="true" id="history" data-icon="time" data-iconpos="notext">History</a>
                 <a href="#" data-role="button" data-inline="true" id="bookmarks" data-icon="bookmark" data-iconpos="notext">Bookmark</a>
@@ -112,7 +113,7 @@
         <h1>Settings</h1>
     </div>
     <div data-role="content">
-        <table width="100%">
+        <table width="100%" id="settings-table">
         <tr><td><label for="setting-fontSize">Text size:</label></td>
             <td><input type="range" name="setting-fontSize" id="setting-fontSize" value="100" min="50" max="250" /></td></tr>
         <tr><td><label for="ruby">Japanese Ruby:</label></td>
