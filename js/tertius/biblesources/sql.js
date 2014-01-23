@@ -39,7 +39,11 @@ And insert plain-text content into the `bible_fts` table.
 
 Tertius.BibleSources.sql = {
   load: function (filename,cb) {
-    var bible = window.sqlitePlugin.openDatabase({name: filename});
+    var bible = window.sqlitePlugin ? // Cordova
+        window.sqlitePlugin.openDatabase({name: filename}) :
+     : // WebSQL/node-webkit
+        window.openDatabase(filename, '1.0', 'A bible '+filename, 16*1024*1024)
+     ;
     $.extend(bible, Tertius.BibleSources.sql);
     bible.transaction(function(tx) {
       var options = {};
