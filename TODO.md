@@ -1,9 +1,8 @@
-* Settings (Font size, Ruby on/off, lexicon)
 * Strongs Hebrew lexicon
-* Free Greek lexicon?
+* Better display of Strongs' greek.
+* Highlight matching words in Hebrew/Gk markup
 
 Requests
 --------
 
 * Liturgy
-* Bible reading plan?
