@@ -3,7 +3,10 @@ Tertius.ToolSources.sql = {
   load: function (filename,cb) {
     if (Tertius.Tools[filename]) { if (cb) return cb(); }
 
-    Tertius.Tools[filename] = window.sqlitePlugin.openDatabase({name: filename});
+    if (window.cordova) 
+        Tertius.Tools[filename] = window.sqlitePlugin.openDatabase({name: filename});
+    else
+        Tertius.Tools[filename] = window.openDatabase(filename, "1.0", filename, 16*1024*1024);
     $.extend(Tertius.Tools[filename] , Tertius.ToolSources.sql);
     if (cb) cb();
   },
