@@ -16,7 +16,12 @@ Tertius = {
       Tertius.HistoryAndBookmarks.load(function() {
         Tertius.UI.setup();
         Tertius.config.bibles.forEach(function(b) {
-          env.load(b, function() {
+          var thisLoader = env;
+          if (typeof(b) == "object") {
+            thisLoader = Tertius.BibleSources[b.loader];
+            b = b.name;
+          }
+          thisLoader.load(b, function() {
             Tertius.UI.rebuildBibleMenu();
             loaded++; 
             if (Tertius.config.start && loaded == Tertius.config.bibles.length) {
