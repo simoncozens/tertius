@@ -19,27 +19,29 @@ Tertius.UIs.NodeWebkit = {
     }
   },
   onMenuPick: function(){
-    console.log("Hello")
+    console.log(this);
+    if (this.checked && Tertius.Bibles[this.bible].onCheck) {Tertius.Bibles[this.bible].onCheck() }
+    if (!this.checked && Tertius.Bibles[this.bible].onUncheck) {Tertius.Bibles[this.bible].onUncheck() }
+
     if (Tertius.state.mode == "search") { Tertius.UI.search(); } else { Tertius.UI.showChapter(); }
   },
   currentBibles: function() {
     var l = []
     for (var i = 0; i < this.bibleMenu.items.length; ++i) {
-      if (this.bibleMenu.items[i].checked)
+      if (this.bibleMenu.items[i].checked) 
         l.push(Tertius.Bibles[this.bibleMenu.items[i].bible])
     }
     return l
   },
   setCurrentBibles: function(babbrevs) {
     var isSet = {}
-    console.log("Setting bibles");
-    console.log(babbrevs)
     for (a in babbrevs) { isSet[babbrevs[a]] = 1}
     for (var i = 0; i < this.bibleMenu.items.length; ++i) {
       var item = this.bibleMenu.items[i];
-      console.log(item.bible);
-      console.log(isSet);
-      if (isSet[item.bible]) { console.log(item.bible); item.checked = true }
+      if (isSet[item.bible]) {
+        item.checked = true 
+        if(item.onCheck) item.onCheck()
+      } else if (item.onUncheck) { item.onUncheck()}
     }
     //this.onMenuPick()
   },
@@ -58,11 +60,6 @@ Tertius.UIs.NodeWebkit = {
       }
     });
     $("#searchbar").change(this.search);
-
-    $("#versions").change(function() {
-      that.decorateHack();
-      if (Tertius.state.mode == "search") { that.search(); } else { that.showChapter(); }
-    });
     this.gotoVerseMode();
     $("#searchButton").click(this.gotoSearchMode);
     $("#verseSelect").click(this.gotoVerseMode);
