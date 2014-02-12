@@ -21,6 +21,7 @@ Tertius.UIs.JQM = {
     this.decorateHack();
   },
   currentBibles: function() {
+    if (!$("#versions").val()) return [];
     return $("#versions").val().map(function (x) {return Tertius.Bibles[x]});
   },
   setCurrentBibles: function(babbrevs) {
