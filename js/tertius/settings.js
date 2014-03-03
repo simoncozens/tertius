@@ -6,7 +6,9 @@ Tertius.SettingsManager = {
   },
   load: function(cb) {
     Tertius.DataStorage.loadJSON("settings", Tertius.SettingsManager, function() {
-      if (!Tertius.SettingsManager.settings) Tertius.SettingsManager.settings = Tertius.SettingsManager.defaultSettings;
+      if (!Tertius.SettingsManager.settings) Tertius.SettingsManager.settings = {};
+      for (k in Tertius.SettingsManager.defaultSettings) 
+      if (!Tertius.SettingsManager.settings[k]) Tertius.SettingsManager.settings[k] = Tertius.SettingsManager.defaultSettings[k];
       cb();
     });
   },
