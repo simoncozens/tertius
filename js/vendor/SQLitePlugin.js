@@ -1,140 +1,136 @@
-// SQLitePlugin.js: originally written in CoffeeScript,
-// Copyright (C) 2011 Joe Noon <joenoon@gmail.com>
-//
-// To regenerate from CoffeeScript:
-// coffee -p SQLitePlugin-orig.coffee > SQLitePlugin.js
-// (and try to keep the comments by hand)
-//
-// NOTE: this Javascript version is now leading, however
-// SQLitePlugin-orig.coffee is still available for review.
-//
-// To convert back to CoffeeScript:
-// js2coffee SQLitePlugin.js > SQLitePlugin-new.coffee
-// (will lose the comments)
-
-if (!window.Cordova) window.Cordova = window.cordova;
-
 (function() {
-  var SQLitePlugin, SQLitePluginTransaction, counter, getOptions, root, exec;
+  var SQLiteFactory, SQLitePlugin, SQLitePluginCallback, SQLitePluginTransaction, get_unique_id, pcb, root, uid;
   root = this;
-  counter = 0;
-
-  exec = function(method, options, success, error) {
-    if (root.sqlitePlugin.DEBUG){
-      console.log('SQLitePlugin.' + method + '(' + JSON.stringify(options) + ')');
-    }
-    cordova.exec(success, error, "SQLitePlugin", method, [options]);
-  };
-
-  SQLitePlugin = function(dbargs, openSuccess, openError) {
-    if (!dbargs || !dbargs['name']) {
+  SQLitePlugin = function(openargs, openSuccess, openError) {
+    var dbname;
+    console.log("SQLitePlugin openargs: " + (JSON.stringify(openargs)));
+    if (!(openargs && openargs['name'])) {
       throw new Error("Cannot create a SQLitePlugin instance without a db name");
     }
-
-    this.dbargs = dbargs;
-    this.dbname = dbargs.name + ".db";
-    dbargs.name = this.dbname;
-
+    dbname = openargs.name;
+    this.openargs = openargs;
+    this.dbname = dbname;
     this.openSuccess = openSuccess;
     this.openError = openError;
     this.openSuccess || (this.openSuccess = function() {
-      console.log("DB opened: " + this.dbname);
+      return console.log("DB opened: " + dbname);
     });
     this.openError || (this.openError = function(e) {
-      console.log(e.message);
+      return console.log(e.message);
     });
-
+    this.bg = !!openargs.bgType && openargs.bgType === 1;
     this.open(this.openSuccess, this.openError);
   };
-
+  SQLitePlugin.prototype.databaseFeatures = {
+    isSQLitePluginDatabase: true
+  };
   SQLitePlugin.prototype.openDBs = {};
-  SQLitePlugin.prototype.txQueue = [];
-  SQLitePlugin.prototype.features = { isSQLitePlugin: true };
-
-  SQLitePlugin.prototype.executePragmaStatement = function(sql, success, error) {
-    if (!sql) throw new Error("Cannot executeSql without a query");
-    var mysuccesscb = function(res) {
-      success(res.rows);
-    };
-    exec("backgroundExecuteSql", { query: [sql], path: this.dbname }, mysuccesscb, error);
-  };
-
-  // API TBD subect to change:
-  SQLitePlugin.prototype._executeSql = function(sql, values, success, error) {
-    if (!sql) throw new Error("Cannot executeSql without a query");
-    exec("backgroundExecuteSql", { query: [sql].concat(values || []), path: this.dbname }, success, error);
-  };
-
-  // API TBD subect to change:
-  SQLitePlugin.prototype._executeSqlNow = function(sql, values, success, error) {
-    if (!sql) throw new Error("Cannot executeSql without a query");
-    exec("executeSql", { query: [sql].concat(values || []), path: this.dbname }, success, error);
-  };
-
-  SQLitePlugin.prototype.transaction = function(fn, error, success) {
-    var t = new SQLitePluginTransaction(this, fn, error, success);
-    this.txQueue.push(t);
-    if (this.txQueue.length == 1){
+  SQLitePlugin.prototype.txQ = [];
+  SQLitePlugin.prototype.addTransaction = function(t) {
+    this.txQ.push(t);
+    if (this.txQ.length === 1) {
       t.start();
     }
   };
-  SQLitePlugin.prototype.startNextTransaction = function(){
-    this.txQueue.shift();
-    if (this.txQueue[0]){
-      this.txQueue[0].start();
+  SQLitePlugin.prototype.transaction = function(fn, error, success) {
+    this.addTransaction(new SQLitePluginTransaction(this, fn, error, success, true));
+  };
+  SQLitePlugin.prototype.startNextTransaction = function() {
+    this.txQ.shift();
+    if (this.txQ[0]) {
+      this.txQ[0].start();
     }
   };
-
   SQLitePlugin.prototype.open = function(success, error) {
-    console.log('open db: ' + this.dbname);
-	  var opts;
     if (!(this.dbname in this.openDBs)) {
       this.openDBs[this.dbname] = true;
-      exec("open", this.dbargs, success, error);
-    } else {
-    	console.log('found db already open ...');
-    	success();
+      cordova.exec(success, error, "SQLitePlugin", "open", [this.openargs]);
     }
   };
   SQLitePlugin.prototype.close = function(success, error) {
     if (this.dbname in this.openDBs) {
       delete this.openDBs[this.dbname];
-      exec("close", { path: this.dbname }, success, error);
+      cordova.exec(null, null, "SQLitePlugin", "close", [this.dbname]);
     }
   };
-  // API TBD ??? - subect to change:
-  SQLitePlugin.prototype._closeCrashed = function(success, error) {
-	 if(this.dbname in this.openDBs) {
-		 delete this.openDBs[this.dbname];
-	 }
-	 success();
+  pcb = function() {
+    return 1;
   };
-  // API TBD ??? - subect to change:
-  SQLitePlugin.prototype._deleteDB =
-  SQLitePlugin.prototype._terminate = function(success,error) {
-	    console.log('deleting db: ' + this.dbname);
-	    if (this.dbname in this.openDBs) {
-	        delete this.openDBs[this.dbname];
-	        exec("delete", {path: this.dbname},success,error);
-	    }
+  SQLitePlugin.prototype.executeSql = function(statement, params, success, error) {
+    var myerror, myfn, mysuccess;
+    mysuccess = function(t, r) {
+      if (!!success) {
+        return success(r);
+      }
+    };
+    myerror = function(t, e) {
+      if (!!error) {
+        return error(e);
+      }
+    };
+    myfn = function(tx) {
+      return tx.executeSql(statement, params, mysuccess, myerror);
+    };
+    this.addTransaction(new SQLitePluginTransaction(this, myfn, myerror, mysuccess, false));
   };
+  /*
+    DEPRECATED AND WILL BE REMOVED:
+  */
 
-  SQLitePluginTransaction = function(db, fn, error, success) {
-    if (typeof fn !== 'function') {
-      // This is consistent with the implementation in Chrome -- it
-      // throws if you pass anything other than a function. This also
-      // prevents us from stalling our txQueue if somebody passes a
-      // false value for fn.
-      throw new Error("transaction expected a function")
+  SQLitePlugin.prototype.executePragmaStatement = function(statement, success, error) {
+    console.log("SQLitePlugin::executePragmaStatement");
+    pcb = success;
+    cordova.exec((function() {
+      return 1;
+    }), error, "SQLitePlugin", "executePragmaStatement", [this.dbname, statement]);
+  };
+  /*
+    FUTURE TBD GONE: Required for db.executePragmStatement() callback ONLY:
+  */
+
+  SQLitePluginCallback = {
+    p1: function(id, result) {
+      var mycb;
+      console.log("PRAGMA CB");
+      mycb = pcb;
+      pcb = function() {
+        return 1;
+      };
+      mycb(result);
+    }
+  };
+  uid = 1000;
+  get_unique_id = function() {
+    return ++uid;
+  };
+  /*
+    Transaction batching object:
+  */
+
+  SQLitePluginTransaction = function(db, fn, error, success, txlock) {
+    this.trid = get_unique_id();
+    if (typeof fn !== "function") {
+      /*
+            This is consistent with the implementation in Chrome -- it
+            throws if you pass anything other than a function. This also
+            prevents us from stalling our txQueue if somebody passes a
+            false value for fn.
+      */
+
+      throw new Error("transaction expected a function");
     }
     this.db = db;
     this.fn = fn;
     this.error = error;
     this.success = success;
+    this.txlock = txlock;
     this.executes = [];
-    this.executeSql('BEGIN', [], null, function(tx, err){ throw new Error("unable to begin transaction: " + err.message) });
+    if (txlock) {
+      this.executeSql("BEGIN", [], null, function(tx, err) {
+        throw new Error("unable to begin transaction: " + err.message);
+      });
+    }
   };
-
   SQLitePluginTransaction.prototype.start = function() {
     try {
       if (!this.fn) {
@@ -143,177 +139,192 @@ if (!window.Cordova) window.Cordova = window.cordova;
       this.fn(this);
       this.fn = null;
       this.run();
-    }
-    catch (err) {
-      // If "fn" throws, we must report the whole transaction as failed.
+    } catch (err) {
+      /*
+            If "fn" throws, we must report the whole transaction as failed.
+      */
+
       this.db.startNextTransaction();
       if (this.error) {
         this.error(err);
       }
     }
   };
-
   SQLitePluginTransaction.prototype.executeSql = function(sql, values, success, error) {
+    var qid;
+    qid = get_unique_id();
     this.executes.push({
-      query: [sql].concat(values || []),
       success: success,
-      error: error
+      error: error,
+      qid: qid,
+      sql: sql,
+      params: values
     });
   };
-
   SQLitePluginTransaction.prototype.handleStatementSuccess = function(handler, response) {
-    if (!handler)
+    var payload, rows;
+    if (!handler) {
       return;
-    var payload = {
-      rows: { item: function (i) { return response.rows[i] }, length: response.rows.length},
-      rowsAffected: response.rowsAffected,
-      insertId: response.insertId || null
+    }
+    rows = response.rows || [];
+    payload = {
+      rows: {
+        item: function(i) {
+          return rows[i];
+        },
+        length: rows.length
+      },
+      rowsAffected: response.rowsAffected || 0,
+      insertId: response.insertId || void 0
     };
     handler(this, payload);
   };
-
-  SQLitePluginTransaction.prototype.handleStatementFailure = function(handler, error) {
-    if (!handler || handler(this, error)){
-      throw error;
+  SQLitePluginTransaction.prototype.handleStatementFailure = function(handler, response) {
+    if (!handler) {
+      throw new Error("a statement with no error handler failed: " + response.message);
+    }
+    if (handler(this, response)) {
+      throw new Error("a statement error callback did not return false");
     }
   };
-
   SQLitePluginTransaction.prototype.run = function() {
-
-    var batchExecutes = this.executes,
-        waiting = batchExecutes.length,
-        txFailure,
-        tx = this,
-        opts = [];
-        this.executes = [];
-
-    // var handlerFor = function (index, didSucceed) {
-    var handleFor = function (index, didSucceed, response) {
-      try {
-        if (didSucceed){
-          tx.handleStatementSuccess(batchExecutes[index].success, response);
-        } else {
-          tx.handleStatementFailure(batchExecutes[index].error, response);
+    var batchExecutes, handlerFor, i, mycb, mycbmap, mycommand, qid, request, tropts, tx, txFailure, waiting;
+    txFailure = null;
+    tropts = [];
+    batchExecutes = this.executes;
+    waiting = batchExecutes.length;
+    this.executes = [];
+    tx = this;
+    handlerFor = function(index, didSucceed) {
+      return function(response) {
+        try {
+          if (didSucceed) {
+            tx.handleStatementSuccess(batchExecutes[index].success, response);
+          } else {
+            tx.handleStatementFailure(batchExecutes[index].error, response);
+          }
+        } catch (err) {
+          if (!txFailure) {
+            txFailure = err;
+          }
         }
-      }
-      catch (err) {
-        if (!txFailure)
-          txFailure = err;
-      }
-      if (--waiting == 0){
-        if (txFailure){
-          tx.rollBack(txFailure);
-        } else if (tx.executes.length > 0) {
-          // new requests have been issued by the callback
-          // handlers, so run another batch.
-          tx.run();
-        } else {
-          tx.commit();
-        }
-      }
-    }
+        if (--waiting === 0) {
+          if (txFailure) {
+            return tx.abort(txFailure);
+          } else if (tx.executes.length > 0) {
+            /*
+                        new requests have been issued by the callback
+                        handlers, so run another batch.
+            */
 
-    for (var i=0; i<batchExecutes.length; i++) {
-      var request = batchExecutes[i];
-      opts.push({
-        query: request.query,
-        path: this.db.dbname
+            return tx.run();
+          } else {
+            return tx.finish();
+          }
+        }
+      };
+    };
+    i = 0;
+    mycbmap = {};
+    while (i < batchExecutes.length) {
+      request = batchExecutes[i];
+      qid = request.qid;
+      mycbmap[qid] = {
+        success: handlerFor(i, true),
+        error: handlerFor(i, false)
+      };
+      tropts.push({
+        trans_id: this.trid,
+        query_id: qid,
+        query: request.sql,
+        params: request.params || []
       });
+      i++;
     }
-
-    var error = function (resultsAndError) {
-        var results = resultsAndError.results;
-        var nativeError = resultsAndError.error;
-        var j = 0;
-
-        // call the success handlers for statements that succeeded
-        for (; j < results.length; ++j) {
-          handleFor(j, true, results[j]);
-        }
-
-        if (j < batchExecutes.length) {
-          // only pass along the additional error info to the statement that
-          // caused the failure (the only one the error info applies to);
-          var error = new Error('Request failed: ' + opts[j].query);
-          error.code = nativeError.code;
-          // the following properties are only defined if the plugin
-          // was compiled with INCLUDE_SQLITE_ERROR_INFO
-          error.sqliteCode = nativeError.sqliteCode;
-          error.sqliteExtendedCode = nativeError.sqliteExtendedCode;
-          error.sqliteMessage = nativeError.sqliteMessage;
-
-          handleFor(j, false, error);
-          j++;
-        }
-
-        // call the error handler for the remaining statements
-        // (Note: this doesn't adhere to the Web SQL spec...)
-        for (; j < batchExecutes.length; ++j) {
-          handleFor(j, false, new Error('Request failed: ' + opts[j].query));
-        }
-    };
-
-    var success = function (results) {
-      if (results.length != opts.length) {
-        // Shouldn't happen, but who knows...
-        error(results);
-      }
-      else {
-        for (var j = 0; j < results.length; ++j) {
-          handleFor(j, true, results[j]);
+    mycb = function(cbResult) {
+      var q, r, res, result, type, _i, _len;
+      result = cbResult.result;
+      for (_i = 0, _len = result.length; _i < _len; _i++) {
+        r = result[_i];
+        type = r.type;
+        qid = r.qid;
+        res = r.result;
+        q = mycbmap[qid];
+        if (q) {
+          if (q[type]) {
+            q[type](res);
+          }
         }
       }
     };
-    exec("executeSqlBatch", {executes: opts}, success, error);
-    //exec("backgroundExecuteSqlBatch", {executes: opts}, success, error);
+    mycommand = this.db.bg ? "backgroundExecuteSqlBatch" : "executeSqlBatch";
+    cordova.exec(mycb, null, "SQLitePlugin", mycommand, [this.db.dbname, tropts]);
   };
-
-  SQLitePluginTransaction.prototype.rollBack = function(txFailure) {
-    if (this.finalized)
+  SQLitePluginTransaction.prototype.abort = function(txFailure) {
+    var failed, succeeded, tx;
+    if (this.finalized) {
       return;
-    this.finalized = true;
+    }
     tx = this;
-    function succeeded(){
+    succeeded = function(tx) {
       tx.db.startNextTransaction();
-      if (tx.error){
-        tx.error(txFailure)
+      if (tx.error) {
+        return tx.error(txFailure);
       }
-    }
-    function failed(tx, err){
+    };
+    failed = function(tx, err) {
       tx.db.startNextTransaction();
-      if (tx.error){
-        tx.error(new Error("error while trying to roll back: " + err.message))
+      if (tx.error) {
+        return tx.error(new Error("error while trying to roll back: " + err.message));
       }
+    };
+    this.finalized = true;
+    if (this.txlock) {
+      this.executeSql("ROLLBACK", [], succeeded, failed);
+      this.run();
+    } else {
+      succeeded(tx);
     }
-    this.executeSql('ROLLBACK', [], succeeded, failed);
-    this.run();
   };
-
-  SQLitePluginTransaction.prototype.commit = function() {
-    if (this.finalized)
+  SQLitePluginTransaction.prototype.finish = function() {
+    var failed, succeeded, tx;
+    if (this.finalized) {
       return;
-    this.finalized = true;
+    }
     tx = this;
-    function succeeded(){
+    succeeded = function(tx) {
       tx.db.startNextTransaction();
-      if (tx.success){
-        tx.success()
+      if (tx.success) {
+        return tx.success();
       }
-    }
-    function failed(tx, err){
+    };
+    failed = function(tx, err) {
       tx.db.startNextTransaction();
-      if (tx.error){
-        tx.error(new Error("error while trying to commit: " + err.message))
+      if (tx.error) {
+        return tx.error(new Error("error while trying to commit: " + err.message));
       }
+    };
+    this.finalized = true;
+    if (this.txlock) {
+      this.executeSql("COMMIT", [], succeeded, failed);
+      this.run();
+    } else {
+      succeeded(tx);
     }
-    this.executeSql('COMMIT', [], succeeded, failed);
-    this.run();
   };
-
   SQLiteFactory = {
+    /*
+        NOTE: this function should NOT be translated from Javascript
+        back to CoffeeScript by js2coffee.
+        If this function is edited in Javascript then someone will
+        have to translate it back to CoffeeScript by hand.
+    */
+
     opendb: function() {
       var errorcb, first, okcb, openargs;
-      if (arguments.length < 1) return null;
+      if (arguments.length < 1) {
+        return null;
+      }
       first = arguments[0];
       openargs = null;
       okcb = null;
@@ -324,24 +335,31 @@ if (!window.Cordova) window.Cordova = window.cordova;
         };
         if (arguments.length >= 5) {
           okcb = arguments[4];
-          if (arguments.length > 5) errorcb = arguments[5];
+          if (arguments.length > 5) {
+            errorcb = arguments[5];
+          }
         }
       } else {
         openargs = first;
         if (arguments.length >= 2) {
           okcb = arguments[1];
-          if (arguments.length > 2) errorcb = arguments[2];
+          if (arguments.length > 2) {
+            errorcb = arguments[2];
+          }
         }
       }
       return new SQLitePlugin(openargs, okcb, errorcb);
-    },
-    deleteDb: function(databaseName, success, error) {
-        exec("delete", { path: databaseName }, success, error);
     }
   };
+  /*
+    FUTURE TBD GONE: Required for db.executePragmStatement() callback ONLY:
+  */
 
-  root.sqlitePlugin = {
-    openDatabase: SQLiteFactory.opendb,
-    deleteDatabase: SQLiteFactory.deleteDb
+  root.SQLitePluginCallback = SQLitePluginCallback;
+  return root.sqlitePlugin = {
+    sqliteFeatures: {
+      isSQLitePlugin: true
+    },
+    openDatabase: SQLiteFactory.opendb
   };
 })();

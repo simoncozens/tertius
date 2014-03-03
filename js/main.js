@@ -34,6 +34,7 @@ Tertius = {
       Tertius.state.chapter = Tertius.config.start[1];
       Tertius.showChapter(Tertius.state.book, Tertius.state.chapter);
     }
+    navigator.splashscreen.hide();
   },
   search: function(ref) {
     console.log("Going to "+ref);
