@@ -37,11 +37,15 @@ And insert plain-text content into the `bible_fts` table.
 
 */
 var sqlOpener;
-if (window.cordova) {
-  sqlOpener = function (f) { return window.sqlitePlugin.openDatabase({name: f }); };
-} else {
-  sqlOpener = function (f) { return window.openDatabase(filename, '1.0', 'A bible '+filename, 16*1024*1024); };
-}
+sqlOpener = function (f) { return window.openDatabase(filename, '1.0', 'A bible '+filename, 16*1024*1024); };
+
+document.addEventListener("deviceready", function() { 
+  if (device.platform == "iOS") { // We must be cordova, else event cannot have fired.
+    sqlOpener = function (f) { return window.sqlitePlugin.openDatabase({name: f+".db" }); };
+  } else {
+    sqlOpener = function (f) { return window.sqlitePlugin.openDatabase({name: f }); };
+  }
+});
 
 Tertius.BibleSources.sql = {
   load: function (filename,cb) {
