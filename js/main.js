@@ -7,6 +7,7 @@ Tertius = {
   bcv: (new bcv_parser()),
   setup: function() {
     Tertius.UI = Tertius.config.UI;
+    var loaded =0;
     Tertius.DataStorage = Tertius.config.DataStorage;
     var env = Tertius.BibleSources[Tertius.config.loader];
     Tertius.config.tools.forEach(function(t) {Tertius.ToolSources[Tertius.config.loader].load(t); });
@@ -15,9 +16,15 @@ Tertius = {
       Tertius.HistoryAndBookmarks.load(function() {
         Tertius.UI.setup();
         Tertius.config.bibles.forEach(function(b) {
-          env.load(b, function() {
+          var thisLoader = env;
+          if (typeof(b) == "object") {
+            thisLoader = Tertius.BibleSources[b.loader];
+            b = b.name;
+          }
+          thisLoader.load(b, function() {
             Tertius.UI.rebuildBibleMenu();
-            if (Tertius.config.start && b == Tertius.config.bibles[Tertius.config.bibles.length-1]) {
+            loaded++; 
+            if (Tertius.config.start && loaded == Tertius.config.bibles.length) {
               Tertius.startUp();
             } 
           });
