@@ -87,6 +87,7 @@ Tertius.BibleSources.sql = {
     if (this.options.fts) {
       query = "SELECT bible_fts.book, bible_fts.chapter, bible_fts.verse, bible.content FROM bible_fts, bible WHERE bible_fts.content MATCH ? AND bible_fts.book = bible.book AND bible_fts.chapter=bible.chapter AND bible_fts.verse = bible.verse";
     } else {
+      text = "%" + text + "%";
       query = "SELECT book, chapter, verse FROM bible where content LIKE ?";
     }
     this._sql_search(query, [text], cb);
