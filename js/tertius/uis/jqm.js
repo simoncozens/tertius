@@ -22,7 +22,7 @@ Tertius.UIs.JQM = {
   },
   currentBibles: function() {
     if (!$("#versions").val()) return [];
-    return $("#versions").val().map(function (x) {return Tertius.Bibles[x]});
+    return jQuery.grep($("#versions").val().map(function (x) {return Tertius.Bibles[x]}), function (n,i) { return n });
   },
   setCurrentBibles: function(babbrevs) {
     $("#versions").val(babbrevs);
